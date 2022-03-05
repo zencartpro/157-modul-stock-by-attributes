@@ -1,0 +1,110 @@
+/**
+ * Stock by Attributes (SBA) CSS Stylesheet
+ *
+ * @license http://www.zen-cart-pro.at/license/3_0.txt GNU Public License V3.0
+ * @version $Id:  $
+ *
+ * Stock by Attributes 2.0.0
+ */
+ 
+#loading {
+    background: white;
+    padding: 20px;
+    border: 1px solid #333333;
+    display: none; /* hidden */
+    position: absolute;    
+    left: 50%;
+    margin-left: -100px;
+    top: 25%;
+    width: 200px;
+    /*height: 100px;*/
+    /*margin-top: -50;*/
+    font-weight: bold;
+    font-size: large;
+}
+
+/* used in products_with_attributes_stock.php in selection box */
+.selectSBAlist{
+    overflow: scroll;
+    background-color: menu;
+    color: #333333;
+}
+
+table#mainProductTable tbody tr td
+{
+	border: 1px solid #eeeeee;
+}
+tr.productRow{font-weight: bold; background-color: #eee;}
+tr.productRow td {padding: 5px;}
+td.stockAttributesCellStockId, td.stockAttributesCellQuantity, td.stockAttributesCellVariant, td.stockAttributesCellDelete, td.stockAttributesCellEdit { padding: 5px;}
+
+td.stockAttributesCellSort{ padding: 5px;}
+td.stockAttributesCellCustomid{ padding: 5px;}
+td.stockAttributesCellTitle{ padding: 5px;}
+
+div.productGroup {padding-bottom: 10px;}
+div.productGroup table {width: 100%;border:none;margin:0;padding:0;}
+
+.thProdId, .tdProdId {width: 50px; }
+.thProdName, .tdProdName {width: 250px;}
+.thProdModel, .tdProdModel {width: 100px;}
+.thProdQty, .tdProdQty {width: 120px;}
+.thProdAdd, .tdProdAdd {width: 220px;}
+.thProdSync, .tdProdSync {width: 110px;}
+.thProdImage, .tdProdImage{width: 60px;}
+
+.thProdId, .tdProdId, .thProdName, .tdProdName,.thProdImage, .tdProdImage,  .thProdModel, .tdProdModel,.thProdQty, .tdProdQty, .thProdAdd, .tdProdAdd, .thProdSync, .tdProdSync{background-color: #d7d6cc;}
+
+.thProdId,.thProdName,.thProdImage, .thProdModel,.thProdQty, .thProdAdd, .thProdSync{ padding: 3px;border: 0px solid #333333;}
+
+table {width: 100%;border:none;margin:0;padding:0;}
+
+#pwas-filter{
+	width:300px;
+	height:20px;
+	border:1px solid #333333;
+}
+
+#pwas-search-button{
+	height:20px;
+}
+
+#sbasearch{
+	float:right;
+}
+
+
+td.stockAttributesCellQuantity{
+background:#E2E2E2;	
+}
+
+td.stockAttributesCellSort{
+background:#EEEEEE;		
+}
+
+.stockAttributesCellEdit a{
+	color:#317BB4;
+	font-weight:normal !important;
+}
+
+.stockAttributesCellDelete a{
+	color:red;
+	font-weight:normal !important;
+}
+
+div.productGroup a{
+		color:#317BB4;
+		font-weight:bold;
+}
+
+.warning a{
+	color:red !important;
+}
+
+.warning{
+	color:red !important;
+}
+
+.smallinfo{
+	font-weight:normal !important;
+}
