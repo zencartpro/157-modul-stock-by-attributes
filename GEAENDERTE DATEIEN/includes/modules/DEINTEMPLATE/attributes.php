@@ -46,39 +46,32 @@ $products_price_is_priced_by_attributes = zen_get_products_price_is_priced_by_at
 
 
 if (PRODUCTS_OPTIONS_SORT_ORDER == '0') {
-                $options_order_by= ' order by LPAD(popt.products_options_sort_order,11,"0"), popt.products_options_name';
-              } else {
-                $options_order_by= ' order by popt.products_options_name';
-              }
+    $options_order_by = ' order by LPAD(popt.products_options_sort_order,11,"0"), popt.products_options_name';
+} else {
+    $options_order_by = ' order by popt.products_options_name';
+}
 
-              $sql = "select distinct popt.products_options_id, popt.products_options_name, popt.products_options_sort_order,
-                              popt.products_options_type, popt.products_options_length, popt.products_options_comment,
-                              popt.products_options_size,
-                              popt.products_options_images_per_row,
-                              popt.products_options_images_style,
-                              popt.products_options_rows
-              from        " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_ATTRIBUTES . " patrib
-              where           patrib.products_id='" . (int)$_GET['products_id'] . "'
-              and             patrib.options_id = popt.products_options_id
-              and             popt.language_id = '" . (int)$_SESSION['languages_id'] . "' " .
-              $options_order_by;
+$sql = "SELECT DISTINCT popt.products_options_id, popt.products_options_name, popt.products_options_sort_order,
+            popt.products_options_type, popt.products_options_length, popt.products_options_comment,
+            popt.products_options_size,
+            popt.products_options_images_per_row,
+            popt.products_options_images_style,
+            popt.products_options_rows
+        FROM " . TABLE_PRODUCTS_OPTIONS . " popt
+        LEFT JOIN " . TABLE_PRODUCTS_ATTRIBUTES . " patrib ON (patrib.options_id = popt.products_options_id) 
+        WHERE patrib.products_id= :products_id
+        AND popt.language_id = :language_id " .
+        $options_order_by;
+$sql = $db->bindVars($sql, ':products_id', $_GET['products_id'], 'integer');
+$sql = $db->bindVars($sql, ':language_id', $_SESSION['languages_id'], 'integer');
+$products_options_names = $db->Execute($sql);
 
-              $products_options_names = $db->Execute($sql);
 
-              // iii 030813 added: initialize $number_of_uploads
-              $number_of_uploads = 0;
-
-              if ( PRODUCTS_OPTIONS_SORT_BY_PRICE =='1' ) {
-                $order_by= ' order by LPAD(pa.products_options_sort_order,11,"0"), pov.products_options_values_name';
-              } else {
-                $order_by= ' order by LPAD(pa.products_options_sort_order,11,"0"), pa.options_values_price';
-              }
-
-              $discount_type = zen_get_products_sale_discount_type((int)$_GET['products_id']);
-              $discount_amount = zen_get_discount_calc((int)$_GET['products_id']);
-              $products_price_is_priced_by_attributes = zen_get_products_price_is_priced_by_attributes((int)$_GET['products_id']);
-
-              $zv_display_select_option = 0;
+if (PRODUCTS_OPTIONS_SORT_BY_PRICE == '1') {
+    $order_by = ' order by LPAD(pa.products_options_sort_order,11,"0"), pov.products_options_values_name';
+} else {
+    $order_by = ' order by LPAD(pa.products_options_sort_order,11,"0"), pa.options_values_price';
+}
 
 while (!$products_options_names->EOF) {
     $products_options_array = array();
@@ -330,27 +323,25 @@ if ($products_options->fields['attributes_display_only'] == 0){
                 	
                 }
 
-                  // radio buttons
-                  if ($products_options_names->fields['products_options_type'] == PRODUCTS_OPTIONS_TYPE_RADIO) {
-                    if ($_SESSION['cart']->in_cart($prod_id)) {
-                      if (isset($_SESSION['cart']->contents[$prod_id]['attributes'][$products_options_names->fields['products_options_id']]) && $_SESSION['cart']->contents[$prod_id]['attributes'][$products_options_names->fields['products_options_id']] == $products_options->fields['products_options_values_id']) {
-                        $selected_attribute = $_SESSION['cart']->contents[$prod_id]['attributes'][$products_options_names->fields['products_options_id']];
-                      } else {
-                        $selected_attribute = false;
-                      }
-                    } else {
-                      //              $selected_attribute = ($products_options->fields['attributes_default']=='1' ? true : false);
-                      // if an error, set to customer setting
-                      if (!empty($_POST['id']) && is_array($_POST['id'])) {
-                        $selected_attribute= false;
-                        foreach ($_POST['id'] as $key => $value) {
-                          if (($key == $products_options_names->fields['products_options_id'] and $value == $products_options->fields['products_options_values_id'])) {
-                            // zen_get_products_name($_POST['products_id']) .
+        // DEAL WITH OPTION TYPES
+
+        // radio buttons
+        if ($products_options_type == PRODUCTS_OPTIONS_TYPE_RADIO) {
+            if ($_SESSION['cart']->in_cart($prod_id)) {
+                if (isset($_SESSION['cart']->contents[$prod_id]['attributes'][$products_options_id]) && $_SESSION['cart']->contents[$prod_id]['attributes'][$products_options_id] == $products_options_value_id) {
+                    $selected_attribute = $_SESSION['cart']->contents[$prod_id]['attributes'][$products_options_id];
+                }
+            } else {
+                // $selected_attribute = ($products_options->fields['attributes_default']=='1' ? true : false);
+                // if an error, set to customer setting
+                if (!empty($_POST['id']) && is_array($_POST['id'])) {
+                    foreach ($_POST['id'] as $key => $value) {
+                        if ($key == $products_options_id && $value == $products_options_value_id) {
                             $selected_attribute = true;
                             break;
-                          }
                         }
-                      } else {
+                    }
+                } else {
                         // select default but do NOT auto select single radio buttons
 //                        $selected_attribute = ($products_options->fields['attributes_default']=='1' ? true : false);
                         // select default radio button or auto select single radio buttons

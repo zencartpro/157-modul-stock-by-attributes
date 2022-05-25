@@ -4,12 +4,12 @@
  *
  *
  * Updated 15-11-14 mc12345678
+ * Updated 25-05-22 webchills
  */
 
 class products_with_attributes_stock_admin extends base {
 
-  //
-  private $_customid = array();
+  //  
   private $_productI;  
 /*  private $_productI;
   
@@ -68,12 +68,6 @@ class products_with_attributes_stock_admin extends base {
 
   }
   
-  
-
- 
-
- 
-  
   // NOTIFY_ATTRIBUTE_CONTROLLER_DELETE_ATTRIBUTE
   function updateNotifyAttributeControllerDeleteAttribute(&$callingClass, $notifier, $paramsArray, &$attribute_id) {
     global $db;
@@ -125,14 +119,6 @@ class products_with_attributes_stock_admin extends base {
   // NOTIFY_MODULES_COPY_TO_CONFIRM_ATTRIBUTES
   function updateNotifyModulesCopyToConfirmAttributes(&$callingClass, $notifier, $paramsArray) {
 
-/*    if ( $_POST['copy_sba_attributes']=='copy_sba_attributes_yes' and $_POST['copy_as'] == 'duplicate' ) {
-      global $products_with_attributes_stock_class;
-
-      $products_id_from = $paramsArray['products_id_from'];
-      $products_id_to = $paramsArray['products_id_to'];
-
-      $products_with_attributes_stock_class->zen_copy_sba_products_attributes($products_id_from, $products_id_to);
-    }*/
   }
   
   // OPTIONS_NAME_MANAGER_DELETE_OPTION', array('option_id' => $option_id, 'options_values_id' => (int)$remove_option_values->fields['products_options_values_id']));

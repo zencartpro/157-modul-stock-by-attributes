@@ -52,8 +52,10 @@ Neu seit Version 2.0.0:<br>
 <br>
 <br>
 Changelog Version 2.1.0<br>
-2022-03-04<br>
-Anpassungen für 1.5.7 und PHP 8<br/>
+2022-05-25<br>
+Anpassungen für 1.5.7 und PHP 8<br>
+Bugfixes für MySQL Strict Mode<br>
+Nicht verwendete Funktionen entfernt<br/>
 jquery.form aktualisiert<br>
 <br>
 Changelog Version 2.0.4<br>
@@ -169,6 +171,16 @@ Dann die Ordner/Dateien in der vorgegebenen Struktur in Ihr Zen Cart   Verzeichn
  Es sind beide erforderlich, damit ein eingeschränkter Admin die Funktionalität nutzen kann.
   <br>
 </p>
+<p><b>Hinweis für Update von älteren Versionen:</b><br/>
+Falls Sie in Ihrem Zen Cart Shop 1.5.6f und älter Stock by Attributes bereits einsetzen und nun auf Zen Cart 1.5.7 und Stock by Attributes 2.1.0 aktualisiert haben, dann führen Sie unter Tools > SQL Patches installieren folgenden Befehl aus (alternativ auch direkt via phpMyAdmin:<br>
+<br/>
+ALTER TABLE `products_with_attributes_stock` CHANGE `sort` `sort` INT NOT NULL DEFAULT '0'; 
+<br>
+<br/>
+Dadurch erhält das Feld sort in der products_with_attributes_stock einen Defaultwert von 0, der nötig ist, wenn MySQL im Strict Mode verwendet wird.<br/>
+Sie bekommen sonst beim Einfügen von Lagerbeständen den Fehler "Field 'sort' doesn't have a default value"<br/>
+Ältere Versionen dieses Moduls hatten die Datenbanktabelle ohne diesen Defaultwert angelegt.
+</p>
 </div>
 </div>
 </div>
@@ -207,9 +219,9 @@ Alle von diesem Modul geänderten Dateien mit den Zen Cart 1.5.7 Originaldateien
 <div class="textcontent">
 <div class="regularlist">
 <h2>Download</h2>
-<p>Dieses Modul steht kostenloas auf Github zum Download bereit.</p>
+<p>Dieses Modul steht kostenlos auf Github zum Download bereit.</p>
 <p>Freigegebene getestete Versionen für den Einsatz in Livesystemen ausschließlich auf Github unter Releases herunterladen:<br/>
-  <a href="https://github.com/zencartpro/157-modul-stock-by-attributes/releases" target="_blank">https://github.com/zencartpro/157-modul-stock-by-attributes/releases</a></p>
+  <a href="https://github.com/zencartpro/157-modul-stock-by-attributes/releases" target="_blank"><b>https://github.com/zencartpro/157-modul-stock-by-attributes/releases</b></a></p>
 </div>
 </div>
 </div>

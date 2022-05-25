@@ -8,7 +8,7 @@
  * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: header_php.php for SBA 2022-03-05 16:41:51Z webchills $
+ * @version $Id: header_php.php for SBA 2022-05-25 16:04:51Z webchills $
  */
 // This should be first line of the script:
   $zco_notifier->notify('NOTIFY_HEADER_START_CHECKOUT_SHIPPING');
@@ -55,7 +55,7 @@ $_SESSION['mobilevisitor'] = false;
   $_SESSION['valid_to_checkout'] = true;
   $_SESSION['cart']->get_products(true);
   if ($_SESSION['valid_to_checkout'] == false) {
-    $messageStack->add('header', ERROR_CART_UPDATE, 'error');
+    $messageStack->add_session('header', ERROR_CART_UPDATE, 'error');
     zen_redirect(zen_href_link(FILENAME_SHOPPING_CART));
   }
 
@@ -217,7 +217,7 @@ if (isset($_SESSION['cart']->cartID)) {
   if (isset($_SESSION['shipping']['id'])) {
     $checklist = array();
     foreach ($quotes as $key=>$val) {
-      if (!empty($val['methods'])) {
+      if ($val['methods'] != '') {
         foreach($val['methods'] as $key2=>$method) {
           $checklist[] = $val['id'] . '_' . $method['id'];
         }

@@ -1,10 +1,11 @@
 <?php
 /**
  * @package Stock by Attributes for Zen Cart German
- * @copyright Copyright 2003-2019 Zen Cart Development Team
+ * @copyright Copyright 2003-2022 Zen Cart Development Team
+ * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: products_with_attributes_stock.php 2019-08-11 08:37:14Z webchills $
+ * @version $Id: products_with_attributes_stock.php 2022-05-25 17:37:14Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {
@@ -164,12 +165,12 @@ class products_with_attributes_stock extends base
     function get_products_with_attributes() {
       global $db;
       if(isset($_SESSION['languages_id'])){ $language_id = (int)$_SESSION['languages_id'];} else { $language_id=1;}
-      $query = 'SELECT DISTINCT pa.products_id, d.products_name, p.products_quantity, p.products_model, p.products_image
+      $query = 'SELECT DISTINCT pa.products_id, pd.products_name, p.products_quantity, p.products_model, p.products_image
                 FROM '.TABLE_PRODUCTS_ATTRIBUTES.' pa
-                left join '.TABLE_PRODUCTS_DESCRIPTION.' d on (pa.products_id = d.products_id)
+                left join '.TABLE_PRODUCTS_DESCRIPTION.' pd on (pa.products_id = pd.products_id)
                 left join '.TABLE_PRODUCTS.' p on (pa.products_id = p.products_id)
-                WHERE d.language_id='.$language_id.' 
-                ORDER BY d.products_name ';
+                WHERE pd.language_id='.$language_id.' 
+                ORDER BY pd.products_name ';
       $products = $db->Execute($query);
       while(!$products->EOF){
         $products_array[] = $products->fields['products_id'];
@@ -219,9 +220,7 @@ function displayFilteredRows($SearchBoxOnly = null, $NumberRecordsShown = null, 
         if(isset($_SESSION['languages_id'])){ $language_id = $_SESSION['languages_id'];} else { $language_id=1;}
         if( isset($_GET['search']) && $_GET['search']){ // mc12345678 Why was $_GET['search'] omitted?
             $s = zen_db_input($_GET['search']);
-           //$w = "(p.products_id = '$s' OR d.products_name LIKE '%$s%' OR p.products_model LIKE '%$s%') AND  " ;//original version of search
-            //$w = "( p.products_id = '$s' OR d.products_name LIKE '%$s%' OR p.products_model LIKE '$s%' ) AND  " ;//changed search to products_model 'startes with'.
-           //$w = "( p.products_id = '$s' OR d.products_name LIKE '%$s%' ) AND  " ;//removed products_model from search
+          
             $w = " AND ( p.products_id = '$s' OR d.products_name LIKE '%$s%' OR p.products_model LIKE '$s%' ) " ;//changed search to products_model 'startes with'.
     } else {
         $w = ''; 
@@ -232,15 +231,12 @@ function displayFilteredRows($SearchBoxOnly = null, $NumberRecordsShown = null, 
         $SearchRange = null;
         if( $ReturnedProductID != null && !isset($_GET['search']) ){
           $ReturnedProductID = zen_db_input($ReturnedProductID);
-          //$w = "( p.products_id = '$ReturnedProductID' ) AND  " ;//sets returned record to display
+          
           $w = " AND ( p.products_id = '$ReturnedProductID' ) " ;//sets returned record to display
           if (!isset($_GET['products_filter']) || (isset($_GET['products_filter']) && $_GET['products_filter'] != '' && $_GET['products_filter'] <= 0)) {
             $SearchRange = "limit 1";//show only selected record
           }
-      } /*elseif ( $ReturnedProductID != null && isset($_GET['search'])) {
-          $ReturnedProductID = zen_db_input($ReturnedProductID);
-        $NumberRecordsShown = zen_db_input($NumberRecordsShown);
-      }*/
+      } 
       elseif( $NumberRecordsShown > 0 && $SearchBoxOnly == 'false' ){
         $NumberRecordsShown = zen_db_input($NumberRecordsShown);
       $SearchRange = " limit $NumberRecordsShown";//sets start record and total number of records to display
@@ -250,26 +246,16 @@ function displayFilteredRows($SearchBoxOnly = null, $NumberRecordsShown = null, 
     }
 
         $retArr = array();
-/*        $query_products =    'select distinct pa.products_id, d.products_name, p.products_quantity, 
-            p.products_model, p.products_image, p.products_type, p.master_categories_id
-            
-            FROM '.TABLE_PRODUCTS_ATTRIBUTES.' pa
-            left join '.TABLE_PRODUCTS_DESCRIPTION.' d on (pa.products_id = d.products_id)
-            left join '.TABLE_PRODUCTS.' p on (pa.products_id = p.products_id)
-            
-            WHERE d.language_id='.$language_id.'
-            ' . $w . '
-            order by d.products_name
-            '.$SearchRange.'';*/
+
         if (isset($_GET['page']) && ($_GET['page'] > 1)) $rows = $_GET['page'] * 500000 - 500000;
 
         if (isset($_GET['search_order_by'])) {
           $search_order_by = $_GET['search_order_by'];
         } else {
-          $search_order_by = 'products_model';
+          $search_order_by = 'p.products_model';
         }
 
-        $query_products =    "select distinct pa.products_id, d.products_name, p.products_quantity, p.products_model, p.products_image, p.products_type, p.master_categories_id FROM ".TABLE_PRODUCTS_ATTRIBUTES." pa, ".TABLE_PRODUCTS_DESCRIPTION." d, ".TABLE_PRODUCTS." p WHERE d.language_id='".$language_id."' and pa.products_id = d.products_id and pa.products_id = p.products_id " . $w . " order by " . $search_order_by . " " /*d.products_name "*/.$SearchRange."";
+        $query_products =    "select distinct pa.products_id, pd.products_name, p.products_quantity, p.products_model, p.products_image, p.products_type, p.master_categories_id FROM ".TABLE_PRODUCTS_ATTRIBUTES." pa, ".TABLE_PRODUCTS_DESCRIPTION." pd, ".TABLE_PRODUCTS." p WHERE pd.language_id='".$language_id."' and pa.products_id = pd.products_id and pa.products_id = p.products_id " . $w . " order by " . $search_order_by . " " /*d.products_name "*/.$SearchRange."";
 
         if (!isset($_GET['seachPID']) && !isset($_GET['pwas-search-button']) && !isset($_GET['updateReturnedPID'])) {
           $products_split = new splitPageResults($_GET['page'], 500000, $query_products, $products_query_numrows);
@@ -340,8 +326,7 @@ function displayFilteredRows($SearchBoxOnly = null, $NumberRecordsShown = null, 
             
             if (STOCK_SHOW_IMAGE == 'true') {$html .= '<td class="tdProdImage">'.zen_info_image(zen_output_string($products->fields['products_image']), zen_output_string($products->fields['products_name']), "60", "60").'</td>';}
             
-            //product.php? page=1 & product_type=1 & cPath=13 & pID=1042 & action=new_product
-            //$html .= '<td class="tdProdModel">'.$products->fields['products_model'] .' </td>';
+      
             $html .= '<td class="tdProdModel">'.$products->fields['products_model'] . '<br /><br /><a href="'.zen_href_link(FILENAME_ATTRIBUTES_CONTROLLER, "products_filter=&amp;products_filter=".$products->fields['products_id']."&amp;current_category_id=".$products->fields['master_categories_id'], 'NONSSL').'">' . BOX_CATALOG_CATEGORIES_ATTRIBUTES_CONTROLLER . '</a></td>';
             $html .= '<td class="tdProdQty">'.$products->fields['products_quantity'].$synchronized.'</td>';
             $html .= '<td class="tdProdAdd"><a href="'.zen_href_link(FILENAME_PRODUCTS_WITH_ATTRIBUTES_STOCK, "action=add&amp;products_id=".$products->fields['products_id'] . '&amp;search_order_by=' . $search_order_by, 'NONSSL').'">' . PWA_ADD_QUANTITY . '</a></td>';
@@ -383,7 +368,7 @@ function displayFilteredRows($SearchBoxOnly = null, $NumberRecordsShown = null, 
                     $options_order_by= ' order by po.products_options_name';
                   }
 
-                  $sort2_query = "SELECT DISTINCT pa.products_attributes_id 
+                  $sort2_query = "SELECT DISTINCT pa.products_attributes_id, po.products_options_sort_order, po.products_options_name
                          FROM " . TABLE_PRODUCTS_ATTRIBUTES . " pa
                    LEFT JOIN " . TABLE_PRODUCTS_OPTIONS . " po on (po.products_options_id = pa.options_id) 
                          WHERE pa.products_attributes_id in (" . $attribute_products->fields['stock_attributes'] . ")
@@ -490,42 +475,8 @@ function saveAttrib(){
           $db->execute($sql);
           $i++;
         }
-      }
-      
-/*      $id1 = intval(str_replace('stockid1-', '', $key));//title
-      $id2 = intval(str_replace('stockid2-', '', $key));//quantity
-      $id3 = intval(str_replace('stockid3-', '', $key));//sort
-      $id4 = intval(str_replace('stockid4-', '', $key));//customid  */
+      }      
 
-/*        if($id1 > 0){
-          $value = $this->nullDataEntry($value);
-          if(empty($value) || is_null($value)){$value = 'null';}
-           $sql = "UPDATE ".TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK." SET title = $value WHERE stock_id = " .$id1. " LIMIT 1";
-           $db->execute($sql);
-          $i++;
-        }*/
-/*        if($id2 > 0){
-          $value = doubleval($value);
-          if(empty($value) || is_null($value)){$value = 0;}
-      $sql = "UPDATE ".TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK." SET quantity = $value WHERE stock_id = " .$id2. " LIMIT 1";
-            $db->execute($sql);
-            $i++;
-        }      
-        if($id3 > 0){
-          $value = doubleval($value);
-          if(empty($value) || is_null($value)){$value = 0;}
-          $sql = "UPDATE ".TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK." SET sort = $value WHERE stock_id = " .$id3. " LIMIT 1";
-          $db->execute($sql);
-          $i++;
-        }
-        if($id4 > 0){
-          $value = addslashes($value);
-          $value = $this->nullDataEntry($value);
-          if(empty($value) || is_null($value)){$value = 'null';}
-          $sql = "UPDATE ".TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK." SET customid = $value WHERE stock_id = " .$id4. " LIMIT 1";
-          $db->execute($sql);
-          $i++;
-        }*/
     }
     unset ($key, $value);
     $html = print_r($_POST, true);
@@ -552,56 +503,21 @@ function updateAttribQty($stock_id = null, $quantity = null){
 //The on duplicate updates an existing record instead of adding a new one
 function insertNewAttribQty($products_id = null, $strAttributes = null, $quantity = 0){
   global $db;
-  //$stock = $products_with_attributes_stock_class; // Should replace all instance of $stock with the class variable.
-  
-  //$customid = addslashes($customid);
-  //$customid = $this->nullDataEntry($customid);//sets proper quoting for input
+ 
   $strAttributes = $this->nullDataEntry($strAttributes);//sets proper quoting for input
   $result = null;
   
   //Set quantity to 0 if not valid input
   if( !(isset($quantity) && is_numeric($quantity)) ){
     $quantity = 0;
-  }
-  
-    // General logic for this section/area:
-    /* 
-    Ultimate Goal is to either insert a unique record or update an existing unique record.
-    Uniqueness was previously identified by maintaining a primary key and three unique keys for the database table; however,
-      it has been identified that some database engines do not like operating with the chosen keys (take too much data), 
-      therefore, use of php code to work with the data is the route to go if this level of uniqueness is to be maintained.
-    Currently there are then four keys of concern.  The first is an auto increment number that is assigned when a record
-      is inserted.  This record is primarily for retrieval and reference by other tables as necessary, though deletion of
-      a variant and adding it back again will provide a new number even if the newly contained data is the same as the
-      old data that was deleted.
-    The second "key" is a combination of the products_id field and the stock_attributes field or variant associated with the entry.
-    The third "key" is also a combination of the products_id and the stock_attributes but all of that is actually combined
-      together into the contents of the field rather than being two independent fields within a record.
-    The fourth "key" is a customid that to date has been required to be unique compared other customids stored in the table
-      or alternatively null and therefore all variants can have a null value for a customid.
-      
-    So, the approach considered is to first attempt to see if any of the keys described above (where data has been provided)
-      is in the table.  This means that the primary key is typically not provided for inspection.
-    If none of the key data is found in the table, then the provided information is new and can be added as a new record.
-    If any of the data is found, then the next question is if the provided data uniquely identifies an existing item or if any
-      of the other keys can be found to match 2 or more entries.  (ie. customid matches one item, but
-      products_id/stock_attributes matches a different one and if further maintained the third key matches yet another record.)
-      This is done in such a way that the variant itself is the main goal with the customid being a piece of additional
-      information for the variant.  Otherwise, one might think that given a customid that is found to exist that the 
-      other data about the variant needs to be modified.  That is not the case in this consideration.  The variant identifies
-      the customid not the customid identifying the variant.  
-    */
+  }  
+ 
   if( isset($products_id) && is_numeric($products_id) && isset($strAttributes) && is_numeric($quantity) ){
-      // Evaluate entry as compared to the desired uniqueness of data in the table.
-      /* PRIMARY KEY (`stock_id`),
-      UNIQUE KEY `idx_products_id_stock_attributes` (`products_id`,`stock_attributes`),
-      UNIQUE KEY `idx_products_id_attributes_id` (`product_attribute_combo`),
-      UNIQUE KEY `idx_customid` (`customid`)*/
-
+      // Evaluate entry as compared to the desired uniqueness of data in the table.    
       
 
       // query for any duplicate records based on input where the input has a match to a non-empty key.
-      $query = "SELECT count(*) AS total FROM " . TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK . " WHERE (products_id = :products_id: AND stock_attributes = :stock_attributes:) " . (isset($productAttributeCombo) ? "OR product_attribute_combo = :product_attribute_combo: " : "") . (isset($customid) /* @TODO if customid is not required to be unique then and with a false */ ? "OR customid = :customid:" : "");
+      $query = "SELECT count(*) AS total FROM " . TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK . " WHERE (products_id = :products_id: AND stock_attributes = :stock_attributes:)";
       $query = $db->bindVars($query, ':products_id:', $products_id, 'integer');
       $query = $db->bindVars($query, ':stock_attributes:', $strAttributes, 'string');
       
@@ -644,7 +560,7 @@ function insertNewAttribQty($products_id = null, $strAttributes = null, $quantit
               }
           
           
-          // If no $customid clash (non-empty customid) or if the $customid is empty then update.
+         
           if ($update_result) {
               $query = "UPDATE " . TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK . " set `quantity` = :quantity: WHERE `products_id` = :products_id: AND `stock_attributes` = :stock_attributes:";
               $query = $db->bindVars($query, ':quantity:', $quantity, 'float');
@@ -653,19 +569,11 @@ function insertNewAttribQty($products_id = null, $strAttributes = null, $quantit
 
               $result = $db->Execute($query);
           } else {
-              // There is a conflict in the customid with the customid being required to be unique.
+             
           }
 
       }
-      // Above replaces this query to provide improved support because some databases do not support the long
-      //  key(s) initially implemented.
-/*     $query = "insert into ". TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK ." (`products_id`, `product_attribute_combo`, `stock_attributes`, `quantity`, `customid`, `title`) 
-           values ($products_id, $productAttributeCombo, $strAttributes, $quantity, $customid, $skuTitle)
-               ON DUPLICATE KEY UPDATE 
-               `quantity` = $quantity,
-               `customid` =  $customid,
-               `title` = $skuTitle";
-     $result = $db->execute($query);*/
+      
   }
   
   return $result;
@@ -674,12 +582,10 @@ function insertNewAttribQty($products_id = null, $strAttributes = null, $quantit
 //IN-WORK New attribute qty insert NEEDS MORE THOUGHT
 //NEED one qty for multiple attributes, this does not accomplish this.
 //The on duplicate updates an existing record instead of adding a new one
-function insertTablePASR($products_id = null, $strAttributes = null, $quantity = null, $customid = null){
+function insertTablePASR($products_id = null, $strAttributes = null, $quantity = null){
   
   global $db;
-  // $stock = $products_with_attributes_stock_class;
-  $customid = addslashes($customid);
-  $customid = $this->nullDataEntry($customid);//sets proper quoting for input
+  
   $strAttributes = $this->nullDataEntry($strAttributes);//sets proper quoting for input
 
   //INSERT INTO `znc_products_attributes_stock_relationship` (`products_id`, `products_attributes_id`, `products_attributes_stock_id`) VALUES (226, 1121, 37);
@@ -718,28 +624,13 @@ function insertTablePASR($products_id = null, $strAttributes = null, $quantity =
   //Table PAS
   if( is_numeric($quantity) && is_numeric($pasrid) ){
     
-    $query = "insert into ". TABLE_PRODUCTS_ATTRIBUTES_STOCK ." (`quantity`,`customid`)
-          values ($quantity, $customid)
+    $query = "insert into ". TABLE_PRODUCTS_ATTRIBUTES_STOCK ." (`quantity`)
+          values ($quantity)
           ON DUPLICATE KEY UPDATE
-          `quantity` = $quantity,
-          `customid` =  $customid;";
+          `quantity` = $quantity;";
     $result = $db->execute($query);
     
-//     //Get the last records ID
-//     $query = "select pas.products_attributes_stock_id
-//           from  ". TABLE_PRODUCTS_ATTRIBUTES_STOCK ."  pas
-//           order by pas.products_attributes_stock_id desc
-//           limit 1;";
-//     $result = $db->execute($query);
-//     $pasid = $result->fields['products_attributes_stock_id'];
-    
-//     $pasid = $stock->nullDataEntry($pasid);//sets proper quoting for input
-    
-    //UPDATE `znc_products_attributes_stock_relationship` SET `products_attributes_stock_id`=26 WHERE  `products_attributes_stock_relationship_id`=27 LIMIT 1;
-//     $query = "UPDATE ". TABLE_PRODUCTS_ATTRIBUTES_STOCK_RELATIONSHIP ." SET `products_attributes_stock_id` = $pasid
-//             where `products_attributes_stock_relationship_id` = $pasrid
-//             LIMIT 1;";
-//     $result = $db->execute($query);
+ $db->execute($query);
     
   }
   else {
@@ -754,24 +645,19 @@ function insertTablePASR($products_id = null, $strAttributes = null, $quantity =
 //products_attributes_stock INWORK New attribute qty insert NEEDS MORE THOUGHT
 //NEED one qty for multiple attributes, this does not accomplish this.
 //The on duplicate updates an existing record instead of adding a new one
-function insertTablePAS($products_id = null, $quantity = null, $customid = null){
+function insertTablePAS($products_id = null, $quantity = null){
 
   global $db;
-  //$stock = $products_with_attributes_stock_class;
-  $customid = addslashes($customid);
-  $customid = $this->nullDataEntry($customid);//sets proper quoting for input
 
-//   INSERT INTO `znc_products_attributes_stock` (`products_id`, `quantity`, `customid`) VALUES (226, 636, 'test37');
   
   //Table PASR (Inset and get $pasrid for next query)
   if( is_numeric($products_id) ){
 
-    $query = "insert into ". TABLE_PRODUCTS_ATTRIBUTES_STOCK ." (`products_id`,`quantity`,`customid`)
-          values ($products_id, $quantity, $customid)
+    $query = "insert into ". TABLE_PRODUCTS_ATTRIBUTES_STOCK ." (`products_id`,`quantity`)
+          values ($products_id, $quantity)
           ON DUPLICATE KEY UPDATE
           `products_id` = $products_id,
-          `quantity` = $quantity,
-          `customid` =  $customid;";
+          `quantity` = $quantity;";
     $result = $db->execute($query);
 
   }
@@ -783,23 +669,6 @@ function insertTablePAS($products_id = null, $quantity = null, $customid = null)
   return $result;
 }
 //ABOVE IN-WORK New attribute qty insert NEEDS MORE THOUGHT
-
-//Update Custom ID of Attribute using the StockID as a key
-function updateCustomIDAttrib($stockid = null, $customid = null){
-  global $db;
-  //$stock = $products_with_attributes_stock_class;
-  $customid = addslashes($customid);
-  $customid = $this->nullDataEntry($customid);//sets proper quoting for input
-
-  if( $customid && is_numeric($stockid) ){
-    $query = 'update ' . TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK . ' set customid = ' . $customid . ' where stock_id = ' . $stockid . ' limit 1';
-    $result = $db->execute($query);
-  }
-
-  return $result;
-}
-
-
 
 //************************* Select list Function *************************//
 //need to update to allow passing the data for $Item "$Item = 'ID:&nbsp;&nbsp;' . $result->fields["products_id"];"
@@ -841,13 +710,7 @@ function selectItemID($Table, $Field, $current = null, $providedQuery = null, $n
   $Output = "<SELECT class='".$class."' id='".$id."' name='".$name."' $onChange >";//create selection list
     $Output .= '<option value="" ' . $style . '>Wählen Sie einen Artikel aus der Liste...</option>';//adds blank entry as first item in list
 
-  /* Fields that may be of use in returned set
-  ["products_id"]
-  ["products_name"]
-  ["products_quantity"]
-  ["products_model"]
-  ["products_image"]
-   */
+  
     $i = 1;
   $result = $db->Execute($query);
      while(!$result->EOF){
@@ -901,176 +764,6 @@ function nullDataEntry($fieldtoNULL){
 
   return $output;
 }
-
-  /* ********************************************************************* */
-  /*  Ported from rhuseby: (my_stock_id MOD) and modified for SBA customid */
-  /*  Added function to support attribute specific part numbers            */
-  /* ********************************************************************* */
-  /* 
-   * @return the customid from the live database
-   * @todo develop a customid return function to retrieve information from the sba orders table.
-   * @todo notification message if no attributes are found for a product identified as SBA tracked.
-   */
-  function zen_get_customid($products_id, $attributes = null) {
-    global $db;
-    $customid_model_query = null;
-    $customid_query = null;
-    $products_id = zen_get_prid($products_id);
-    $stock_attributes = array();
-
-    // This function probably could be factored down a bit to provide better clarity of what is going on and offer options at 
-    //   the end of what to return.  For example, determine the standard products_model response, then the various other
-    //   customid combinations available.  Could do this with an array, one key for each type, to then return the result(s) as 
-    //   desired to be used on the receiving end.
-
-    if (!$this->zen_product_is_sba($products_id)) {
-      $no_attribute_stock_query = 'SELECT products_model
-                                   FROM ' . TABLE_PRODUCTS . '
-                                   WHERE products_id = :products_id:';
-      $no_attribute_stock_query = $db->bindVars($no_attribute_stock_query, ':products_id:', $products_id, 'integer');
-      $customid = $db->Execute($no_attribute_stock_query, false, false, 0, true);
-      
-      return $customid->fields['products_model'];
-    }
-    
-    // check if there are attributes for this product. (Doesn't check against option names nor option values)
-     $stock_has_attributes_query = 'SELECT products_attributes_id 
-                                   FROM ' . TABLE_PRODUCTS_ATTRIBUTES . ' 
-                                   WHERE products_id = :products_id:';
-    $stock_has_attributes_query = $db->bindVars($stock_has_attributes_query, ':products_id:', $products_id, 'integer');
-    $stock_has_attributes = $db->Execute($stock_has_attributes_query, false, false, 0, true);
-
-    if ($stock_has_attributes->EOF || $stock_has_attributes->RecordCount() == 0 ) {
-      
-      //if no attributes return products_model.  This ought to not be possible to exist because the SBA table is populated
-      //  and code is in place to delete SBA table entries when such attribute data is deleted from within ZC. (Doesn't prevent
-      //  an outside source from making modifications such as a selective restore or import/export of the SBA table.)
-      // Perhaps a notification message should be shown on the admin if this condition is met.
-      $no_attribute_stock_query = 'SELECT products_model 
-                                   FROM ' . TABLE_PRODUCTS . ' 
-                                   WHERE products_id = :products_id:';
-      $no_attribute_stock_query = $db->bindVars($no_attribute_stock_query, ':products_id:', $products_id, 'integer');
-      $customid = $db->Execute($no_attribute_stock_query, false, false, 0, true);
-      return $customid->fields['products_model'];
-    } 
-    else {
-      // Product is a SBA tracked product and the product has attributes.  Check to see if the product has any customid's assigned.
-      $stock_has_customid_query = 'SELECT COUNT(customid) as total
-                                   FROM ' . TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK . '
-                                   WHERE products_id = :products_id:
-                                   LIMIT 1';
-      $stock_has_customid_query = $db->bindVars($stock_has_customid_query, ':products_id:', $products_id, 'integer');
-      $stock_has_customid = $db->Execute($stock_has_customid_query);
-      
-      // If the product does not have any customid's provide the products_model.
-      if ($stock_has_customid->fields['total'] == 0) {
-        $stock_no_customid_query = 'SELECT products_model
-                                    FROM ' . TABLE_PRODUCTS . '
-                                    WHERE products_id = :products_id:';
-        $stock_no_customid_query = $db->bindVars($stock_no_customid_query, ':products_id:', $products_id, 'integer');
-        $customid = $db->Execute($stock_no_customid_query);
-        
-        return $customid->fields['products_model'];
-      }
-      
-      if(is_array($attributes) && !empty($attributes)){
-        // check if attribute stock values have been set for the product
-        // if there are will we continue, otherwise we'll use product level data
-        $attribute_stock = $db->Execute("select stock_id 
-                                         FROM " . TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK . " 
-                                         WHERE products_id = " . (int)$products_id . ";");
-    
-        if ($attribute_stock->RecordCount() > 0) {
-          // search for details for the particular attributes combination
-          $first_search = ' WHERE options_values_id IN ('.implode(',',zen_db_prepare_input($attributes)).') ';
-          
-          // obtain the attribute ids
-          $query = 'select products_attributes_id 
-              from '.TABLE_PRODUCTS_ATTRIBUTES.' 
-                  :first_search:
-                  and products_id = :products_id: 
-                  order by products_attributes_id;';
-          $query = $db->bindVars($query, ':first_search:', $first_search, 'noquotestring');
-          $query = $db->bindVars($query, ':products_id:', $products_id, 'integer');
-          $attributes_new = $db->Execute($query);
-          
-          while(!$attributes_new->EOF){
-            $stock_attributes[] = $attributes_new->fields['products_attributes_id'];
-            $attributes_new->MoveNext();
-          }
-
-          $stock_attributes_comb = implode(',',$stock_attributes);
-        }
-        
-        //Get product model
-        $customid_model_query = 'select products_model 
-                        from '.TABLE_PRODUCTS.' 
-                        where products_id = '. (int)$products_id . ';';
-
-        //Get custom id as products_model considering that all of the attributes as a group define the customid.
-        $customid_query = 'select customid as products_model
-                    from '.TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK.' 
-                    where products_id = :products_id: 
-                    and stock_attributes in (:stock_attributes:)'; 
-        $customid_query = $db->bindVars($customid_query, ':products_id:', $products_id, 'integer');
-        $customid_query = $db->bindVars($customid_query, ':stock_attributes:', $stock_attributes_comb, 'string');
-        $customid = $db->Execute($customid_query); //moved to inside this loop as for some reason it has made
-        
-        if ($attribute_stock->RecordCount() > 0 && $customid->RecordCount() == 0 && zen_not_null($stock_attributes_comb)){ // if a customid does not exist for the combination of attributes then perhaps the attributes are individually listed.
-          $customid_query = 'select customid as products_model
-                    from '.TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK.' 
-                    where products_id = :products_id: 
-                    and stock_attributes in (:stock_attributes:)'; 
-          $customid_query = $db->bindVars($customid_query, ':products_id:', $products_id, 'integer');
-          $customid_query = $db->bindVars($customid_query, ':stock_attributes:', $stock_attributes_comb, 'passthru');
-          $customid = $db->Execute($customid_query); //moved to inside this loop as for some reason it has made
-        }
-      }// If array
-      
-//      $customid = $db->Execute($customid_query);
-      if($customid->RecordCount() > 0 && $customid->fields['products_model']){
-      
-        //Test to see if a custom ID exists
-        //if there are custom IDs with the attribute, then return them.
-        $multiplecid = null;
-          //mc12345678: Alternative to the below would be to build an array of "products_model" then implode
-          //  the array on ', '... Both methods would require stepping through each of the
-          //  returned values to build the desired structure.  The below does all of the
-          //  implode in one swoop, though does not account for some of the individual items having
-          //  a customid while others do not and thus could get x, y, , w, , z as an example.
-          //  Either this is something identified up front, is prevented from happening at all, or
-          //  is controllable through some form of "switch".  The maximum flexibility of this is
-          //  covered by adding an if statement to the below, otherwise if going to build an array
-          //  to then be imploded, separate action would need to take place to eliminate the "blanks".
-          
-          // With zen_not_null statement below, only existing customids will be comma separated.  Here is a possible
-          // Switch per "product" or store that allows the customid to be merged or presented in parts.
-        while(!$customid->EOF && zen_not_null($customid->fields['products_model'])){
-          $multiplecid .= $customid->fields['products_model'] . ', ';
-          $customid->MoveNext();
-        }
-        $multiplecid = rtrim($multiplecid, ', ');
-          
-          //return result for display
-        return $multiplecid;
-      
-      }
-      else{
-        $customid = null;
-        //This is used as a fall-back when custom ID is set to be displayed but no attribute is available.
-        //Get product model
-        $customid_model_query = 'select products_model
-                        from '.TABLE_PRODUCTS.'
-                        where products_id = :products_id:';
-        $customid_model_query = $db->bindVars($customid_model_query, ':products_id:', $products_id, 'integer');                
-        
-        $customid = $db->Execute($customid_model_query);
-        //return result for display
-        return $customid->fields['products_model'];
-      }
-      return null;//nothing to return, should never reach this return
-    }
-  }//end of function
   
   function zen_copy_sba_products_attributes($products_id_from, $products_id_to) {
 
@@ -1156,26 +849,9 @@ function nullDataEntry($fieldtoNULL){
         unset($key);
         unset($value);
 
-        $check_duplicate = $_SESSION['pwas_class2']->zen_get_sba_stock_attribute_id($products_id_to, $attributes_copy_from_ids_data, 'products');
+        $check_duplicate = $_SESSION['pwas_class2']->zen_get_sba_stock_attribute_id($products_id_to, $attributes_copy_from_ids_data, 'products');     
         
         
-        
-        /* 
-            CREATE TABLE IF NOT EXISTS `products_with_attributes_stock` (
-        `stock_id` int(11) NOT NULL AUTO_INCREMENT,
-        `products_id` int(11) NOT NULL,
-        `product_attribute_combo` varchar(255) DEFAULT NULL,
-        `stock_attributes` varchar(255) NOT NULL,
-        `quantity` float NOT NULL DEFAULT '0',
-        `sort` int(11) NOT NULL DEFAULT '0',
-        `customid` varchar(255) DEFAULT NULL,
-        `title` varchar(50) DEFAULT NULL,
-        PRIMARY KEY (`stock_id`),
-        UNIQUE KEY `idx_products_id_stock_attributes` (`products_id`,`stock_attributes`),
-        UNIQUE KEY `idx_products_id_attributes_id` (`product_attribute_combo`),
-        UNIQUE KEY `idx_customid` (`customid`)
-
-      */
         if ($check_attributes == true) {
           if (!isset($check_duplicate) || $check_duplicate === false) {
             $update_attribute = false;

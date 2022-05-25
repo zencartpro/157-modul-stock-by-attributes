@@ -5,7 +5,7 @@
  * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: products_with_attributes_stock.php 2022-03-05 17:00:14Z webchills $
+ * @version $Id: products_with_attributes_stock.php 2022-05-25 20:27:14Z webchills $
  */
 
 $SBAversion = 'Version 2.1.0';
@@ -544,9 +544,11 @@ switch ($action) {
     zen_redirect(zen_href_link(FILENAME_PRODUCTS_WITH_ATTRIBUTES_STOCK, '', $request_type));
     break;
 
-  default:
-
-    $products_filter = $_GET['products_filter'] = (int)$_POST['products_filter'];
+  default:   
+  $products_filter = '';
+    if (isset($_POST['products_filter'])) {
+      $products_filter = $_GET['products_filter'] = (int)$_POST['products_filter'];
+    }    
     // Show a list of the products
     break;
 }
@@ -740,7 +742,9 @@ function go_search() {
           echo '<h3>' . zen_get_products_name($products_id) . '</h3>';
 
           foreach ($attributes_list as $attributes) {
+          	if( is_array($attributes) ) {
             echo '<p><strong>' . $attributes['option'] . ': </strong>' . $attributes['value'] . '</p>';
+          }
           }
 
           echo $hidden_form;
@@ -998,7 +1002,7 @@ break;
       $last = $value;
       $counter++;
     }
-
+    $previous = '';
     if ($previous == -1) $previous = $last;
 
     $sql = "select categories_name

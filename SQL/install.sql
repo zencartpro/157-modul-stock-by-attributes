@@ -1,5 +1,5 @@
 #########################################################################################
-# Stock by Attributes 2.1.0 Multilanguage Install Zen-Cart 1.5.7 - 2022-03-05 - webchills
+# Stock by Attributes 2.1.0 Multilanguage Install Zen-Cart 1.5.7 - 2022-05-25 - webchills
 #########################################################################################
 
 
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS products_with_attributes_stock (
         products_id INT NOT NULL,
         stock_attributes VARCHAR(255) NOT NULL,
         quantity FLOAT NOT NULL,
-        sort INT NOT NULL,
+        sort INT NOT NULL DEFAULT '0',
         PRIMARY KEY (stock_id)
         ) ENGINE=MyISAM;
         
