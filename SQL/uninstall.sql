@@ -1,5 +1,5 @@
 ###########################################################################
-# Stock by Attributes 2.1.0 - UNINSTALL - 2022-03-05 - webchills
+# Stock by Attributes 2.1.0 - UNINSTALL - 2022-10-22 - webchills
 # NUR AUSFÜHREN WENN SIE DAS MODUL AUS DER DATENBANK ENTFERNEN WOLLEN!!!!!
 ###########################################################################
 

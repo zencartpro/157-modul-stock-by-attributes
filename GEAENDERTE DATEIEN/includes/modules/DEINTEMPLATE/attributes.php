@@ -4,13 +4,12 @@
  *
  * Prepares attributes content for rendering in the template system
  * Prepares HTML for input fields with required uniqueness so template can display them as needed and keep collected data in proper fields
- *
- 
+ * 
  * @copyright Copyright 2003-2022 Zen Cart Development Team
  * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: attributes.php for SBA 2022-03-05 09:24:16Z webchills $
+ * @version $Id: attributes.php for SBA 2022-10-22 15:46:16Z webchills $
  */
 if (!defined('IS_ADMIN_FLAG')) {
   die('Illegal Access');
@@ -112,38 +111,40 @@ while (!$products_options_names->EOF) {
                 $products_options = $db->Execute($sql);
               } else {
               	
-              	$sql = "select    pov.products_options_values_id,
-                        pov.products_options_values_name,
-                        pa.*
-              from      " . TABLE_PRODUCTS_ATTRIBUTES . " pa, " . TABLE_PRODUCTS_OPTIONS_VALUES . " pov
-              where     pa.products_id = '" . (int)$_GET['products_id'] . "'
-              and       pa.options_id = '" . (int)$products_options_names->fields['products_options_id'] . "'
-              and       pa.options_values_id = pov.products_options_values_id
-              and       pov.language_id = '" . (int)$_SESSION['languages_id'] . "' " .
+            
+    $sql= "SELECT  pov.products_options_values_id,
+                            pov.products_options_values_name,
+                            pa.*,
+                            pwas.*
+                FROM   " . TABLE_PRODUCTS_OPTIONS_VALUES . " pov, " . TABLE_PRODUCTS_ATTRIBUTES . " pa LEFT JOIN " . TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK . " pwas ON pwas.stock_attributes = pa.products_attributes_id
+                WHERE   pa.products_id = '" . (int)$_GET['products_id'] . "'
+                   and    pa.options_id = '" . (int)$products_options_names->fields['products_options_id'] . "'
+                
+                  and    pa.options_values_id = pov.products_options_values_id
+                 and       pov.language_id = '" . (int)$_SESSION['languages_id'] . "' " .
                 $order_by;
-
-                $products_options = $db->Execute($sql);
+$products_options = $db->Execute($sql);
               	
               }
 
-                $products_options_value_id = 0;
+    $products_options_value_id = 0;
                 $products_options_details = '';
                 $products_options_details_noname = '';
                 $tmp_radio = '';
                 $tmp_checkbox = '';
                 $tmp_html = '';
-                $selected_attribute = $selected_dropdown_attribute = false; // boolean, used for radio/checkbox/select
+    $selected_attribute = $selected_dropdown_attribute = false; // boolean, used for radio/checkbox/select
 
                 $tmp_attributes_image = '';
                 $tmp_attributes_image_row = 0;
-                $show_attributes_qty_prices_icon = false;
+    $show_attributes_qty_prices_icon = false;
                 $i=0;
 
-                $zco_notifier->notify('NOTIFY_ATTRIBUTES_MODULE_START_OPTION', $products_options_names->fields);
+    $zco_notifier->notify('NOTIFY_ATTRIBUTES_MODULE_START_OPTION', $products_options_names->fields);
 
-                if (!isset($products_options_names->fields['products_options_comment_position'])) {
-                  $products_options_names->fields['products_options_comment_position'] = '0';
-                }
+    if (!isset($products_options_names->fields['products_options_comment_position'])) {
+        $products_options_names->fields['products_options_comment_position'] = '0';
+    }
 
     // loop through each Attribute
     while (!$products_options->EOF) {
@@ -172,6 +173,13 @@ while (!$products_options_names->EOF) {
                  	$products_options_array[] = array('id' => $products_options->fields['products_options_values_id'],
                  'text' => $products_options->fields['products_options_values_name']);
                  }
+		         $attributeDetailsArrayForJson[$inputFieldId] = array_merge(
+            array(
+                'field_id' => $inputFieldId,
+                'name' => $products_options_names->fields['products_options_name'],
+                'attr_id' => $products_options_names->fields['products_options_id'],
+            ), $products_options->fields, $products_options_names->fields);
+
 
         $zco_notifier->notify('NOTIFY_ATTRIBUTES_MODULE_START_OPTIONS_LOOP', $i++, $products_options->fields, $products_options_names->fields, $data_properties, $field_disabled, $attributeDetailsArrayForJson);
 
@@ -192,7 +200,7 @@ while (!$products_options_names->EOF) {
                     // collect price information if it exists
                     if ($products_options->fields['attributes_discounted'] == 1) {
                       // apply product discount to attributes if discount is on
-                      $new_attributes_price = zen_get_attributes_price_final($products_options->fields["products_attributes_id"], 1, '', 'false', $products_price_is_priced_by_attributes);
+                      $new_attributes_price = zen_get_attributes_price_final($products_options->fields["products_attributes_id"], 1, '', false, $products_price_is_priced_by_attributes);
                       //$new_attributes_price = zen_get_discount_calc((int)$_GET['products_id'], true, $new_attributes_price);
                     } else {
                       // discount is off do not apply
@@ -240,13 +248,14 @@ while (!$products_options_names->EOF) {
                         $products_options_display_price = '';
                     } else {
                         $products_options_display_price = ATTRIBUTES_PRICE_DELIMITER_PREFIX . $products_options->fields['price_prefix'] . $currencies->display_price($new_attributes_price, zen_get_tax_rate($product_info->fields['products_tax_class_id'])) . ATTRIBUTES_PRICE_DELIMITER_SUFFIX;
+                        }
+                      }
                     }
-                }
-            }
 
-            $products_options_display_price .= $price_onetime;
+                    $products_options_display_price .= $price_onetime;
 
                   } // approve
+
         $zco_notifier->notify('NOTIFY_ATTRIBUTES_MODULE_ORIGINAL_PRICE', $products_options->fields, $products_options_array, $products_options_display_price, $data_properties);
 
         $products_options_array[count($products_options_array) - 1]['text'] .= $products_options_display_price;
@@ -341,7 +350,7 @@ if ($products_options->fields['attributes_display_only'] == 0){
                             break;
                         }
                     }
-                } else {
+                      } else {
                         // select default but do NOT auto select single radio buttons
 //                        $selected_attribute = ($products_options->fields['attributes_default']=='1' ? true : false);
                         // select default radio button or auto select single radio buttons
@@ -350,7 +359,6 @@ if ($products_options->fields['attributes_display_only'] == 0){
                     }
 
             $zco_notifier->notify('NOTIFY_ATTRIBUTES_MODULE_RADIO_SELECTED', $products_options->fields, $data_properties);
-
             switch ($products_options_names->fields['products_options_images_style']) {
                 case '0':
                     $tmp_radio .= zen_draw_radio_field('id[' . $products_options_id . ']', $products_options_value_id, $selected_attribute, 'id="' . $inputFieldId . '" ' . $data_properties . $field_disabled) . '<label class="attribsRadioButton zero" for="' . $inputFieldId . '">' . $products_options_details . '</label><br>' . "\n";
@@ -372,8 +380,8 @@ if ($products_options->fields['attributes_display_only'] == 0){
                         $tmp_attributes_image .= '<div class="attribImg">' . zen_draw_radio_field('id[' . $products_options_id . ']', $products_options_value_id, $selected_attribute, 'id="' . $inputFieldId . '" ' . $data_properties . $field_disabled) . '<label class="attribsRadioButton three" for="' . $inputFieldId . '">' . zen_image(DIR_WS_IMAGES . $products_options->fields['attributes_image']) . (PRODUCT_IMAGES_ATTRIBUTES_NAMES == '1' ? '<br>' . $products_options->fields['products_options_values_name'] : '') . $products_options_details_noname . '</label></div>' . "\n";
                     } else {
                         $tmp_attributes_image .= '<div class="attribImg">' . zen_draw_radio_field('id[' . $products_options_id . ']', $products_options_value_id, $selected_attribute, 'id="' . $inputFieldId . '" ' . $data_properties . $field_disabled) . '<br>' . '<label class="attribsRadioButton threeA" for="' . $inputFieldId . '">' . $products_options->fields['products_options_values_name'] . $products_options_details_noname . '</label></div>' . "\n";
-                      }
-                      break;
+                    }
+                    break;
 
                       case '4':
                       $tmp_attributes_image_row++;
@@ -381,22 +389,22 @@ if ($products_options->fields['attributes_display_only'] == 0){
                       if ($tmp_attributes_image_row > $products_options_names->fields['products_options_images_per_row']) {
                         $tmp_attributes_image .= '<br class="clearBoth">' . "\n";
                         $tmp_attributes_image_row = 1;
-                    }
+                      }
 
                     if (!empty($products_options->fields['attributes_image'])) {
                         $tmp_attributes_image .= '<div class="attribImg">' . '<label class="attribsRadioButton four" for="' . $inputFieldId . '">' . zen_image(DIR_WS_IMAGES . $products_options->fields['attributes_image']) . (PRODUCT_IMAGES_ATTRIBUTES_NAMES == '1' ? '<br>' . $products_options->fields['products_options_values_name'] : '') . (!empty($products_options_details_noname) ? '<br>' . $products_options_details_noname : '') . '</label><br>' . zen_draw_radio_field('id[' . $products_options_id . ']', $products_options_value_id, $selected_attribute, 'id="' . $inputFieldId . '" ' . $data_properties . $field_disabled) . '</div>' . "\n";
                     } else {
                         $tmp_attributes_image .= '<div class="attribImg">' . '<label class="attribsRadioButton fourA" for="' . $inputFieldId . '">' . $products_options->fields['products_options_values_name'] . (!empty($products_options_details_noname) ? '<br>' . $products_options_details_noname : '') . '</label><br>' . zen_draw_radio_field('id[' . $products_options_id . ']', $products_options_value_id, $selected_attribute, 'id="' . $inputFieldId . '" ' . $data_properties . $field_disabled) . '</div>' . "\n";
-                    }
-                    break;
+                      }
+                      break;
 
-                case '5':
-                    $tmp_attributes_image_row++;
+                      case '5':
+                      $tmp_attributes_image_row++;
 
-                    if ($tmp_attributes_image_row > $products_options_names->fields['products_options_images_per_row']) {
+                      if ($tmp_attributes_image_row > $products_options_names->fields['products_options_images_per_row']) {
                         $tmp_attributes_image .= '<br class="clearBoth">' . "\n";
                         $tmp_attributes_image_row = 1;
-                    }
+                      }
 
                     if (!empty($products_options->fields['attributes_image'])) {
                         $tmp_attributes_image .= '<div class="attribImg">' . zen_draw_radio_field('id[' . $products_options_id . ']', $products_options_value_id, $selected_attribute, 'id="' . $inputFieldId . '" ' . $data_properties . $field_disabled) . '<br>' . '<label class="attribsRadioButton five" for="' . $inputFieldId . '">' . zen_image(DIR_WS_IMAGES . $products_options->fields['attributes_image']) . (PRODUCT_IMAGES_ATTRIBUTES_NAMES == '1' ? '<br>' . $products_options->fields['products_options_values_name'] : '') . (!empty($products_options_details_noname) ? '<br>' . $products_options_details_noname : '') . '</label></div>';
@@ -452,9 +460,9 @@ if ($products_options->fields['attributes_display_only'] == 0){
                     break;
 
                 case '3':
-                    $tmp_attributes_image_row++;
+                      $tmp_attributes_image_row++;
 
-                    if ($tmp_attributes_image_row > $products_options_names->fields['products_options_images_per_row']) {
+                      if ($tmp_attributes_image_row > $products_options_names->fields['products_options_images_per_row']) {
                         $tmp_attributes_image .= '<br class="clearBoth">' . "\n";
                         $tmp_attributes_image_row = 1;
                     }
@@ -524,18 +532,18 @@ if ($products_options->fields['attributes_display_only'] == 0){
                     // $tmp_html .= '  <input type="reset">';
                 } else {
                     $tmp_html = '<input type="text" name="id[' . TEXT_PREFIX . $products_options_id . ']" size="' . $products_options_names->fields['products_options_size'] . '" maxlength="' . $products_options_names->fields['products_options_length'] . '" value="' . htmlspecialchars($tmp_value, ENT_COMPAT, CHARSET, true) . '" id="' . $inputFieldId . '"'  . $data_properties . $field_disabled . '>  ';
-                }
-                $tmp_html .= $products_options_details;
-                $tmp_word_cnt_string = '';
-                // calculate word charges
-                $tmp_word_cnt = 0;
-                $tmp_word_cnt_string = $tmp_value;
-                $tmp_word_cnt = zen_get_word_count($tmp_word_cnt_string, $products_options->fields['attributes_price_words_free']);
-                $tmp_word_price = zen_get_word_count_price($tmp_word_cnt_string, $products_options->fields['attributes_price_words_free'], $products_options->fields['attributes_price_words']);
+                      }
+                      $tmp_html .= $products_options_details;
+                      $tmp_word_cnt_string = '';
+                      // calculate word charges
+                      $tmp_word_cnt =0;
+                      $tmp_word_cnt_string = $tmp_value;
+                      $tmp_word_cnt = zen_get_word_count($tmp_word_cnt_string, $products_options->fields['attributes_price_words_free']);
+                      $tmp_word_price = zen_get_word_count_price($tmp_word_cnt_string, $products_options->fields['attributes_price_words_free'], $products_options->fields['attributes_price_words']);
 
-                if ($products_options->fields['attributes_price_words'] != 0) {
-                    $tmp_html .= TEXT_PER_WORD . $currencies->display_price($products_options->fields['attributes_price_words'], zen_get_tax_rate($product_info->fields['products_tax_class_id'])) . ($products_options->fields['attributes_price_words_free'] !=0 ? TEXT_WORDS_FREE . $products_options->fields['attributes_price_words_free'] : '');
-                }
+                      if ($products_options->fields['attributes_price_words'] != 0) {
+                        $tmp_html .= TEXT_PER_WORD . $currencies->display_price($products_options->fields['attributes_price_words'], zen_get_tax_rate($product_info->fields['products_tax_class_id'])) . ($products_options->fields['attributes_price_words_free'] !=0 ? TEXT_WORDS_FREE . $products_options->fields['attributes_price_words_free'] : '');
+                      }
                 if ($tmp_word_cnt != 0 && $tmp_word_price != 0) {
                     $tmp_word_price = $currencies->display_price($tmp_word_price, zen_get_tax_rate($product_info->fields['products_tax_class_id']));
                     $tmp_html .= '<br>' . TEXT_CHARGES_WORD . ' ' . $tmp_word_cnt . ' = ' . $tmp_word_price;
@@ -599,11 +607,10 @@ if ($products_options->fields['attributes_display_only'] == 0){
 
 
         // default
-        // find default attribute if set. Intended for dropdown's default
+        // find default attribute if set for default dropdown
         if ($products_options->fields['attributes_default'] == '1') {
-            $selected_dropdown_attribute = $products_options_value_id;
+            $selected_attribute = $products_options_value_id;
         }
-        $selected_attribute = $selected_dropdown_attribute;
 
         $products_options->MoveNext();
         // end of inner while() loop

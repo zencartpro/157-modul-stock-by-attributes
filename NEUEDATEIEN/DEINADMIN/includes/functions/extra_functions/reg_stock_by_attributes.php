@@ -1,10 +1,11 @@
 <?php
 /**
- * @package admin
- * @copyright Copyright 2003-2021 Zen Cart Development Team
+ * @package Stock by Attributes for Zen Cart German
+ * @copyright Copyright 2003-2022 Zen Cart Development Team
+ * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: reg_stock_by_attributes.php 2021-02-16 10:42:14Z webchills $
+ * @version $Id: reg_stock_by_attributes.php 2022-10-22 12:10:14Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {

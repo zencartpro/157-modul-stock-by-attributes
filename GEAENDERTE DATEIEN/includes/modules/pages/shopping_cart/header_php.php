@@ -7,7 +7,7 @@
  * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: header_php.php for SBA 2022-05-25 16:04:18Z webchills $
+ * @version $Id: header_php.php for SBA 2022-10-22 11:57:16Z webchills $
  */
 
 // This should be first line of the script:

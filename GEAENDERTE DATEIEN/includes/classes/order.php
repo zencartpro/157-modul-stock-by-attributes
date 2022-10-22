@@ -4,7 +4,7 @@
  * @copyright Copyright 2003-2022 Zen Cart Development Team
  * Zen Cart German Version - www.zen-cart-pro.at
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: order.php for SBA 2022-05-25 16:02:23Z webchills $
+ * @version $Id: order.php for SBA 2022-10-22 11:42:25Z webchills $
  */
 /**
  * order class
@@ -135,7 +135,7 @@ class order extends base {
                             'country' => $order->fields['delivery_country'],
                             'format_id' => $order->fields['delivery_address_format_id']);
 
-    if (($order->fields['shipping_module_code'] == 'storepickup') ||
+    if (($order->fields['shipping_module_code'] == 'storepickup') || 
         (empty($this->delivery['name']) && empty($this->delivery['street_address']))) {
       $this->delivery = false;
     }
@@ -151,10 +151,10 @@ class order extends base {
                            'format_id' => $order->fields['billing_address_format_id']);
 
     $index = 0;
-    $orders_products_query = "SELECT *
-                              FROM " . TABLE_ORDERS_PRODUCTS . "
+    $orders_products_query = "select *
+                                  from " . TABLE_ORDERS_PRODUCTS . "
                               WHERE orders_id = " . (int)$this->orderId . "
-                              ORDER BY orders_products_id";
+                                  order by orders_products_id";
 
     $orders_products = $db->Execute($orders_products_query);
 
@@ -204,9 +204,9 @@ class order extends base {
                                       );
 
       $subindex = 0;
-      $attributes_query = "SELECT products_options_id, products_options_values_id, products_options, products_options_values,
-                           options_values_price, price_prefix, product_attribute_is_free 
-                           FROM " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . "
+      $attributes_query = "select products_options_id, products_options_values_id, products_options, products_options_values,
+                              options_values_price, price_prefix, product_attribute_is_free 
+                              from " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . "
                            WHERE orders_id = " . (int)$this->orderId . "
                            AND orders_products_id = " . (int)$orders_products->fields['orders_products_id'] . "
                            ORDER BY orders_products_attributes_id ASC";
@@ -217,13 +217,13 @@ class order extends base {
         while (!$attributes->EOF) {
           $this->products[$index]['attributes'][$subindex] = array(
               'option' => $attributes->fields['products_options'],
-               'value' => $attributes->fields['products_options_values'],
-               'option_id' => $attributes->fields['products_options_id'],
-               'value_id' => $attributes->fields['products_options_values_id'],
-               'prefix' => $attributes->fields['price_prefix'],
-               'price' => $attributes->fields['options_values_price'],
-               'product_attribute_is_free' => (int)$attributes->fields['product_attribute_is_free'],
-          );
+                                                                   'value' => $attributes->fields['products_options_values'],
+                                                                   'option_id' => $attributes->fields['products_options_id'],
+                                                                   'value_id' => $attributes->fields['products_options_values_id'],
+                                                                   'prefix' => $attributes->fields['price_prefix'],
+                                                                   'price' => $attributes->fields['options_values_price'],
+                                                                   'product_attribute_is_free' => (int)$attributes->fields['product_attribute_is_free'],
+);
 
           $subindex++;
           $attributes->MoveNext();
@@ -358,7 +358,7 @@ class order extends base {
 
     if ($customer_address->RecordCount() > 0) {
       $this->customer = array('gender' => $customer_address->fields['customers_gender'],
-                              'firstname' => $customer_address->fields['customers_firstname'],
+                               'firstname' => $customer_address->fields['customers_firstname'],
                               'lastname' => $customer_address->fields['customers_lastname'],
                               'company' => $customer_address->fields['entry_company'],
                               'street_address' => $customer_address->fields['entry_street_address'],
@@ -444,7 +444,9 @@ class order extends base {
                                       'price' => $products[$i]['price'],
                                       'tax' => null, // calculated later
                                       'tax_groups' => null, // calculated later
-                                      'final_price' => zen_round($products[$i]['price'] + $_SESSION['cart']->attributes_price($products[$i]['id']), $decimals),
+                                      // Falls Sie Rundungsabweichungen bei der Zwischensumme feststellen kommentieren Sie Zeile 448 mit // aus und entkommentieren Sie Zeile 449
+                                      'final_price' => $products[$i]['price'] + $_SESSION['cart']->attributes_price($products[$i]['id']),
+                                      //'final_price' => zen_round($products[$i]['price'] + $_SESSION['cart']->attributes_price($products[$i]['id']), $decimals),
                                       'onetime_charges' => $_SESSION['cart']->attributes_price_onetime_charges($products[$i]['id'], $products[$i]['quantity']),
                                       'weight' => $products[$i]['weight'],
                                       'products_priced_by_attribute' => $products[$i]['products_priced_by_attribute'],
@@ -842,7 +844,7 @@ class order extends base {
             $stock_left = $stock_values->fields['products_quantity'];
           }
 
-         
+          $products_status_update = ($stock_left <= 0 && SHOW_PRODUCTS_SOLD_OUT == '0') ? ', products_status = 0' : '';
 
           $db->Execute("update " . TABLE_PRODUCTS . " set products_quantity = '" . $stock_left . "' where products_id = '" . zen_get_prid($this->products[$i]['id']) . "'");
 			// Begin SBA
@@ -1210,7 +1212,7 @@ class order extends base {
     if ($this->content_type != 'virtual' && !$storepickup) {
       $html_msg['ADDRESS_DELIVERY_DETAIL']    = zen_address_label($_SESSION['customer_id'], $_SESSION['sendto'], true, '', "<br>");
     } else {
-       $html_msg['ADDRESS_DELIVERY_DETAIL']    = 'n/a'; 
+       $html_msg['ADDRESS_DELIVERY_DETAIL']    = 'n/a';
     }
     $html_msg['SHIPPING_METHOD_TITLE']      = HEADING_SHIPPING_METHOD;
     $html_msg['SHIPPING_METHOD_DETAIL']     = (zen_not_null($this->info['shipping_method'])) ? $this->info['shipping_method'] : 'n/a';

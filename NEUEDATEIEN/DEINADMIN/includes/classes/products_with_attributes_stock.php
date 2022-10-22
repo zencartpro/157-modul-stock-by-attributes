@@ -5,7 +5,7 @@
  * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: products_with_attributes_stock.php 2022-05-25 17:37:14Z webchills $
+ * @version $Id: products_with_attributes_stock.php 2022-10-22 12:13:14Z webchills $
  */
 
 if (!defined('IS_ADMIN_FLAG')) {
@@ -16,14 +16,10 @@ class products_with_attributes_stock extends base
   {  
     function get_products_attributes($products_id, $languageId=1)
     {
-      global $db;
-      // Added the following to query "and pa.attributes_display_only != 1" This removed display only attributes from the stock selection.
-      // Added the following to query "AND po.products_options_type != ' . PRODUCTS_OPTIONS_TYPE_READONLY so that would ignore READONLY attributes.
+      global $db;     
 
-      $attributes_array = array();
-      
-      //LPAD - Return the string argument, left-padded with the specified string 
-      //example: LPAD(po.products_options_sort_order,11,"0") the field is 11 digits, and is left padded with 0
+      $attributes_array = array();      
+     
       if (PRODUCTS_OPTIONS_SORT_ORDER=='0') {
         $options_order_by= ' order by LPAD(popt.products_options_sort_order,11,"0"), popt.products_options_name';
       } else {
@@ -334,11 +330,7 @@ function displayFilteredRows($SearchBoxOnly = null, $NumberRecordsShown = null, 
             $html .= '</tr>'."\n";
             $html .= '</table>'."\n";
             
-          // SUB            
-/*          $query = 'select * from '.TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK.' where products_id="'.$products->fields['products_id'].'"
-                    order by sort ASC;';
 
-          $attribute_products = $db->Execute($query);*/
           if($attribute_products->RecordCount() > 0){
 
               $html .= '<table class="stockAttributesTable">';
@@ -392,7 +384,7 @@ function displayFilteredRows($SearchBoxOnly = null, $NumberRecordsShown = null, 
                         $attributes_output[] = '<strong>'.$stock_attribute['option'].':</strong> '.$stock_attribute['value'].'<br />';
                       }
                   }
-//                  sort($attributes_output);
+
                   $html .= implode("\n",$attributes_output);
 
                   $html .= '</td>'."\n";
@@ -439,15 +431,13 @@ function displayFilteredRows($SearchBoxOnly = null, $NumberRecordsShown = null, 
 function saveAttrib(){
 
   global $db;
-//  $stock = $products_with_attributes_stock_class; // Should replace all cases of $stock with the class variable name.
+
     $i = 0;
 
     foreach ($_POST as $key => $value) {
       $matches = array();
       
-      if(preg_match('/stockid-(.*?)-(.*)/', $key, $matches)) {
-        // $matches[1] is expected to be the pwas database table field to be updated
-        // $matches[2] is expected to be the pwas stock_id to be updated
+      if(preg_match('/stockid-(.*?)-(.*)/', $key, $matches)) {  
 
         $tabledata = '';
         $stock_id = null;
@@ -458,7 +448,7 @@ function saveAttrib(){
         switch ($tabledata) {
           case 'quantity':
           case 'sort':
-//            $value = (float)$value; // Get a float value
+
             $value = $db->getBindVarValue($value, 'float');
             break;
          
@@ -475,8 +465,8 @@ function saveAttrib(){
           $db->execute($sql);
           $i++;
         }
-      }      
-
+      }
+      
     }
     unset ($key, $value);
     $html = print_r($_POST, true);
@@ -573,7 +563,6 @@ function insertNewAttribQty($products_id = null, $strAttributes = null, $quantit
           }
 
       }
-      
   }
   
   return $result;
@@ -588,9 +577,7 @@ function insertTablePASR($products_id = null, $strAttributes = null, $quantity =
   
   $strAttributes = $this->nullDataEntry($strAttributes);//sets proper quoting for input
 
-  //INSERT INTO `znc_products_attributes_stock_relationship` (`products_id`, `products_attributes_id`, `products_attributes_stock_id`) VALUES (226, 1121, 37);
-  
-  //Table PASR (Inset and get $pasrid for next query)
+
   if( is_numeric($products_id) && isset($strAttributes) ){
     
     //Get the last records ID
@@ -803,13 +790,10 @@ function nullDataEntry($fieldtoNULL){
       $check_attributes = zen_has_product_attributes($products_id_to, 'false');
 
       if ($copy_attributes_delete_first=='1' and $check_attributes == true) {
-// die('DELETE FIRST - Copying from ' . $products_id_from . ' to ' . $products_id_to . ' Do I delete first? ' . $copy_attributes_delete_first);
-        // delete all attributes first from products_id_to
 
-//        $zco_notifier->notify('NOTIFY_ATTRIBUTE_CONTROLLER_DELETE_ALL', array('pID' => $_POST['products_filter']));
         $products_with_attributes_stock_admin_observe->updateNotifyAttributeControllerDeleteAll($this, 'NOTIFY_ATTRIBUTE_CONTROLLER_DELETE_ALL', array('pID' => $products_id_to));
 
-//        $db->Execute("delete from " . TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK . " where products_id = '" . (int)$products_id_to . "'");
+
 
       }
 

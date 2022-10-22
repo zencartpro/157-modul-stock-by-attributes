@@ -11,7 +11,7 @@
  * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: tpl_shopping_cart_default.php for SBA 2022-05-25 16:05:39Z webchills $
+ * @version $Id: tpl_shopping_cart_default.php for SBA 2022-10-22 11:58:58Z webchills $
  */
 ?>
 <?php 
@@ -131,7 +131,6 @@ if (defined('MODULE_PAYMENT_PAYPALWPP_STATUS') && MODULE_PAYMENT_PAYPALWPP_STATU
 	// END "Stock by Attributes"
 ?>
 <br class="clearBoth">
-
 <?php
   echo $product['attributeHiddenField'];
   if (isset($product['attributes']) && is_array($product['attributes'])) {
@@ -223,6 +222,7 @@ if (defined('MODULE_PAYMENT_PAYPALWPP_STATUS') && MODULE_PAYMENT_PAYPALWPP_STATU
 <?php
     }
 ?>
+
 
 
 <?php

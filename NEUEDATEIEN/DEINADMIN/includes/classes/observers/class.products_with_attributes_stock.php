@@ -1,15 +1,16 @@
 <?php
-
-/**************
- *
- *
- * Updated 15-11-14 mc12345678
- * Updated 25-05-22 webchills
+/**
+ * @package Stock by Attributes for Zen Cart German
+ * @copyright Copyright 2003-2022 Zen Cart Development Team
+ * Zen Cart German Version - www.zen-cart-pro.at
+ * @copyright Portions Copyright 2003 osCommerce
+ * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
+ * @version $Id: class.products_with_attributes_stock.php 2022-10-22 16:10:14Z webchills $
  */
 
 class products_with_attributes_stock_admin extends base {
 
-  //  
+  //
   private $_productI;  
 /*  private $_productI;
   
@@ -67,6 +68,12 @@ class products_with_attributes_stock_admin extends base {
     /* END STOCK BY ATTRIBUTES */
 
   }
+  
+  
+
+ 
+
+ 
   
   // NOTIFY_ATTRIBUTE_CONTROLLER_DELETE_ATTRIBUTE
   function updateNotifyAttributeControllerDeleteAttribute(&$callingClass, $notifier, $paramsArray, &$attribute_id) {

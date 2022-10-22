@@ -5,8 +5,7 @@
  * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: orders.php for SBA 2022-05-25 16:01:51Z webchills $
-
+ * @version $Id: orders.php for SBA 2022-10-22 16:08:51Z webchills $
  */
 require('includes/application_top.php');
 
@@ -254,9 +253,11 @@ if (!empty($action) && $order_exists === true) {
       // capture any posted values that it has inserted into the order-update form.
       //
       $zco_notifier->notify('NOTIFY_ADMIN_ORDERS_UPDATE_ORDER_START', $oID);
+
       $order_updated = false;
       $status_updated = zen_update_orders_history($oID, $comments, null, $status, $customer_notified, $email_include_message);
       $order_updated = ($status_updated > 0);
+
       $check_status = $db->ExecuteNoCache("SELECT customers_name, customers_email_address, orders_status, date_purchased
                                     FROM " . TABLE_ORDERS . "
                                     WHERE orders_id = " . (int)$oID . "
@@ -763,9 +764,8 @@ if (!empty($action) && $order_exists === true) {
           $option_name_array = explode(":", $order->products[$i]['attributes'][$j]['option']);
           $option_Name = $option_name_array[0];
           // eof SBA
-                        echo '<br><span style="white-space:nowrap;"><small>&nbsp;<i> - ';
+                                               echo '<br><span style="white-space:nowrap;"><small>&nbsp;<i> - ';
                         echo $order->products[$i]['attributes'][$j]['option'] . ': ' . nl2br(zen_output_string_protected($order->products[$i]['attributes'][$j]['value']));
-
                         if (zen_is_option_file($order->products[$i]['attributes'][$j]['option_id'])) {
                           $upload_name = zen_get_uploaded_file($order->products[$i]['attributes'][$j]['value']);
                           echo ' ' . '<a href="' . zen_href_link(FILENAME_ORDERS, 'action=download&oID=' . $oID . '&filename=' .  $upload_name) . '">' . TEXT_DOWNLOAD . '</a>' . ' ';
@@ -783,7 +783,7 @@ if (!empty($action) && $order_exists === true) {
                     echo '<span class="visible-xs">';
                     echo ' (' . $order->products[$i]['model'] .')';
                     echo '</span>';
-                ?>
+                    ?>
                 </td>
                 <td class="dataTableContent hidden-xs">
                   <?php echo $order->products[$i]['model']; ?>

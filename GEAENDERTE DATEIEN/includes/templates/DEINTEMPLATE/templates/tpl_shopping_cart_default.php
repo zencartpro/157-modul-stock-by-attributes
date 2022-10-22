@@ -10,7 +10,7 @@
  * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: tpl_shopping_cart_default.php for SBA 2022-05-25 16:06:39Z webchills $
+ * @version $Id: tpl_shopping_cart_default.php for SBA 2022-10-22 12:00:16Z webchills $
  */
 ?>
 <div class="centerColumn" id="shoppingCartDefault">
@@ -83,12 +83,12 @@ if (defined('MODULE_PAYMENT_PAYPALWPP_STATUS') && MODULE_PAYMENT_PAYPALWPP_STATU
 <?php
 	// START "Stock by Attributes"
  	if( $product['lowproductstock'] AND STOCK_CHECK == 'true' ) {
- 		echo $product['quantityField']           . '<br /><span class="alert bold">***' . '</span><br /><br />' . $product['showMinUnits'];
+ 		echo $product['quantityField']           . '<br><span class="alert bold">***' . '</span><br><br>' . $product['showMinUnits'];
  	}
   	elseif ( $product['flagShowFixedQuantity'] ) {
-    echo $product['showFixedQuantityAmount'] . '<br /><span class="alert bold">' . $product['flagStockCheck'] . '</span><br><br>' . $product['showMinUnits'];
+    echo $product['showFixedQuantityAmount'] . '<br><span class="alert bold">' . $product['flagStockCheck'] . '</span><br><br>' . $product['showMinUnits'];
   } else {
-    echo $product['quantityField'] . '<br /><span class="alert bold">' . $product['flagStockCheck'] . '</span><br><br>' . $product['showMinUnits'];
+    echo $product['quantityField'] . '<br><span class="alert bold">' . $product['flagStockCheck'] . '</span><br><br>' . $product['showMinUnits'];
   }
 ?>
        </td>
@@ -130,13 +130,13 @@ if (defined('MODULE_PAYMENT_PAYPALWPP_STATUS') && MODULE_PAYMENT_PAYPALWPP_STATU
 	}
 	// END "Stock by Attributes"
 ?>
-<br class="clearBoth">
+<br class="clearBoth" />
 
 <?php
   echo $product['attributeHiddenField'];
   if (isset($product['attributes']) && is_array($product['attributes'])) {
-  echo '<div class="cartAttribsList">';
-  echo '<ul>';
+    echo '<div class="cartAttribsList">';
+    echo '<ul>';
     foreach ($product['attributes'] as $option => $value) {
 ?>
 
