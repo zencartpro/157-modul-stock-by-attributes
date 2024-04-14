@@ -1,14 +1,13 @@
 <?php
 /**
- * Zen Cart German Specific
+ * Zen Cart German Specific (158 code in 157 / zencartpro adaptations)
  * Checkout Shipping Page
  *
-
- * @copyright Copyright 2003-2022 Zen Cart Development Team
+ * @copyright Copyright 2003-2024 Zen Cart Development Team
  * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: header_php.php for SBA 2022-10-22 11:52:16Z webchills $
+ * @version $Id: header_php.php for SBA 2024-04-14 12:55:16Z webchills $
  */
 // This should be first line of the script:
   $zco_notifier->notify('NOTIFY_HEADER_START_CHECKOUT_SHIPPING');
@@ -16,11 +15,11 @@
   
 // check if is mobile or tablet visitor to allow order report mobile, tablet or desktop
   
-if (!class_exists('Mobile_Detect')) {
-  include_once(DIR_WS_CLASSES . 'Mobile_Detect.php');
+if (!class_exists('MobileDetect')) {
+  include_once(DIR_WS_CLASSES . 'vendors/MobileDetect/MobileDetect.php');
 }
 
-$detect = new Mobile_Detect;
+$detect = new \Detection\MobileDetect;
 $isMobile = $detect->isMobile();
 $isTablet = $detect->isTablet();
 
@@ -43,13 +42,14 @@ $_SESSION['mobilevisitor'] = false;
   if (!zen_is_logged_in()) {
     $_SESSION['navigation']->set_snapshot();
     zen_redirect(zen_href_link(FILENAME_LOGIN, '', 'SSL'));
-  } else {
-    // validate customer
-    if (zen_get_customer_validate_session($_SESSION['customer_id']) == false) {
-      $_SESSION['navigation']->set_snapshot(array('mode' => 'SSL', 'page' => FILENAME_CHECKOUT_SHIPPING));
-      zen_redirect(zen_href_link(FILENAME_LOGIN, '', 'SSL'));
-    }
   }
+
+$customer = new Customer($_SESSION['customer_id']);
+// validate customer
+if (zen_get_customer_validate_session($_SESSION['customer_id']) === false) {
+    $_SESSION['navigation']->set_snapshot(array('mode' => 'SSL', 'page' => FILENAME_CHECKOUT_SHIPPING));
+    zen_redirect(zen_href_link(FILENAME_LOGIN, '', 'SSL'));
+}
 
 // Validate Cart for checkout
   $_SESSION['valid_to_checkout'] = true;
@@ -63,7 +63,6 @@ $_SESSION['mobilevisitor'] = false;
   if ( (STOCK_CHECK == 'true') && (STOCK_ALLOW_CHECKOUT != 'true') ) {
     $products = $_SESSION['cart']->get_products();
     for ($i=0, $n=sizeof($products); $i<$n; $i++) {
-
       // Begin SBA - Added to allow individual stock of different attributes
       unset($attributes);
       if(is_array($products[$i]['attributes'])) {
@@ -74,11 +73,12 @@ $_SESSION['mobilevisitor'] = false;
 
       if (zen_check_stock($products[$i]['id'], $products[$i]['quantity'], $attributes)) {
 // End SBA
-        zen_redirect(zen_href_link(FILENAME_SHOPPING_CART));
-        break;
-      }
+          zen_redirect(zen_href_link(FILENAME_SHOPPING_CART));
+          break;
+        }
     }
   }
+
 // if no shipping destination address was selected, use the customers own address as default
   if (empty($_SESSION['sendto'])) {
     $_SESSION['sendto'] = $_SESSION['customer_default_address_id'];
@@ -215,14 +215,12 @@ if (isset($_SESSION['cart']->cartID)) {
 
   // check that the currently selected shipping method is still valid (in case a zone restriction has disabled it, etc)
   if (isset($_SESSION['shipping']['id'])) {
-    $checklist = array();
+    $checklist = [];
     foreach ($quotes as $key=>$val) {
-      if ($val['methods'] != '') {
+      if (is_array($val['methods'])) {
         foreach($val['methods'] as $key2=>$method) {
           $checklist[] = $val['id'] . '_' . $method['id'];
         }
-      } else {
-        // skip
       }
     }
     $checkval = $_SESSION['shipping']['id'];

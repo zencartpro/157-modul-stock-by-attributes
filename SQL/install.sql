@@ -1,5 +1,5 @@
 #########################################################################################
-# Stock by Attributes 2.1.0 Multilanguage Install Zen-Cart 1.5.7 - 2022-10-22 - webchills
+# Stock by Attributes 2.2.0 Multilanguage Install Zen-Cart 1.5.7 - 2024-04-13 - webchills
 #########################################################################################
 
 

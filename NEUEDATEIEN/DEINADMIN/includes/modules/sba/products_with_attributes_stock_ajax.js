@@ -1,4 +1,3 @@
-//stockAttributesCellQuantity
 function addEvent() {
     "use strict";
 
@@ -31,46 +30,6 @@ function addEvent() {
                 var inner = tgt.innerHTML;
                 if (!$(tgt).is("input")) {
                     var newLi = "<input type=\"text\" name=\"" + id + "\" id=\"" + id + "\" value=\"" + inner + "\" size=\"8\"/>";
-                    tgt.innerHTML = newLi;
-                    //this.unbind("click");
-                }
-            });
-            curcelltitle.haseventhandler = true;
-        }
-    });
-
-//stockAttributesCellCustomid
-    $(".stockAttributesCellCustomid").each(function (iter) {
-        var curcelltitle = this;
-        if (!curcelltitle.haseventhandler) {
-            $(curcelltitle).click(function (event) {
-                /* Our Eventhanderl */
-                var tgt = event.target;
-                var id = tgt.id;
-                var inner = tgt.innerHTML;
-                if (!$(tgt).is("input")) {
-                    var newLi = "<input type=\"text\" name=\"" + id + "\" id=\"" + id + "\" value=\"" + inner + "\" size=\"8\"/>";
-                    tgt.innerHTML = newLi;
-                    //this.unbind("click");
-                }
-            });
-            curcelltitle.haseventhandler = true;
-        }
-    });
-//}
-
-//stockAttributesCellTitle
-//function addEvent() {
-    $(".stockAttributesCellTitle").each(function (iter) {
-        var curcelltitle = this;
-        if (!curcelltitle.haseventhandler) {
-            $(curcelltitle).click(function (event) {
-                /* Our Eventhanderl */
-                var tgt = event.target;
-                var id = tgt.id;
-                var inner = tgt.innerHTML;
-                if (!$(tgt).is("input")) {
-                    var newLi = "<input type=\"text\" name=\"" + id + "\" id=\"" + id + "\" value=\"" + inner + "\" size=\"25\"/>";
                     tgt.innerHTML = newLi;
                     //this.unbind("click");
                 }

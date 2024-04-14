@@ -12,7 +12,7 @@
 <body>
 <div id="wrapper">
 <div id="header">
-<h1>Lagerbestand für Artikel mit Attributen - Stock by Attributes 2.1.0 <br>
+<h1>Lagerbestand für Artikel mit Attributen - Stock by Attributes 2.2.0 <br>
   für Zen Cart 1.5.7 deutsch</h1>
 </div>
 
@@ -48,45 +48,47 @@ Wenn Sie unter Konfiguration &gt; Lagerverwaltung einstellen, dass   Bestellunge
 Neu seit Version 2.0.0:<br>
 - komplett überarbeitete Administration, direktes Ändern mehrerer Lagerbestände via Ajax<br>
 - Anzeige des verfügbaren Lagerbestandes für die Variante gleich bei der Attributauswahl auf der Artikeldetailseite (admingesteuert)<br>
-- Ausblenden von nicht lagernden Varianten bei der Attributauswahl auf der Artikeldetailseite (admingesteuert)
+- Ausblenden von nicht lagernden Varianten bei der Attributauswahl auf der Artikeldetailseite (admingesteuert)</p>
+  <p>Changelog Version 2.2.0<br>
+2024-04-13<br>
+Anpassungen für 1.5.7h und PHP 8.2<br>
 <br>
-<br>
-Changelog Version 2.1.0<br>
-2022-10-22<br>
-Anpassungen für 1.5.7e und PHP 8<br>
-Bugfixes für MySQL Strict Mode<br>
-Nicht verwendete Funktionen entfernt<br/>
-jquery.form aktualisiert<br>
-<br>
-Changelog Version 2.0.4<br>
-2021-06-25<br>
-Anleitung und Versionsnummer aktualisiert, keine sonstigen Änderungen<br>
-<br>
-Changelog Version 2.0.3<br>
-2021-02-16<br>
-Bugfix für fehlende Ajax Berechtigung bei eingeschränkten Admin Profilen<br>
-<br>
-Changelog Version 2.0.2<br>
-2020-07-15<br>
-Anpassungen aus 1.5.6e integriert
-<br>
-<br>
-Changelog Version 2.0.1<br>
-2019-11-11<br>
-Anpassungen aus 1.5.6d integriert
-<br>
-<br>
+    Changelog Version 2.1.0<br>
+    2022-10-22<br>
+    Anpassungen für 1.5.7e und PHP 8<br>
+    Bugfixes für MySQL Strict Mode<br>
+    Nicht verwendete Funktionen entfernt<br/>
+    jquery.form aktualisiert<br>
+    <br>
+    Changelog Version 2.0.4<br>
+    2021-06-25<br>
+    Anleitung und Versionsnummer aktualisiert, keine sonstigen Änderungen<br>
+    <br>
+    Changelog Version 2.0.3<br>
+    2021-02-16<br>
+    Bugfix für fehlende Ajax Berechtigung bei eingeschränkten Admin Profilen<br>
+    <br>
+    Changelog Version 2.0.2<br>
+    2020-07-15<br>
+    Anpassungen aus 1.5.6e integriert
+    <br>
+    <br>
+    Changelog Version 2.0.1<br>
+    2019-11-11<br>
+    Anpassungen aus 1.5.6d integriert
+    <br>
+    <br>
   </p>
 <h3>Copyright,  Lizenz</h3>
 <p>Copyright dieser deutschen Anpassung/Anleitung für Zen Cart 1.5.7 deutsch<br>
-(c) 2016-2022 webchills (<a href="http://www.webchills.at" target="_blank">www.webchills.at</a>)</p>
+(c) 2016-2024 webchills (<a href="http://www.webchills.at" target="_blank">www.webchills.at</a>)</p>
 <p>deutsche Übersetzung/Anpassung des Moduls Stock by Attributes 1.5.3<br>
   <a href="http://www.zen-cart.com/downloads.php?do=file&id=202" target="_blank">http://www.zen-cart.com/downloads.php?do=file&amp;id=202</a></p>
 <p>Copyright (c) 2009-2010 Numinix Technology (<a href="http://www.numinix.com" target="_blank">www.numinix.com</a>)<br>
   Portions Copyright (c) 2008 edv-lösungen langheiter (<a href="http://edv.langheiter.com" target="_blank">edv.langheiter.com</a>)<br>
   Portions Copyright (c) 2006-2007 kuroi Ltd (<a href="http://www.kuroiwebdesign.com" target="_blank">www.kuroiwebdesign.com</a>)<br>
   Portions Copyright (c) 2005 dafonz, 2006 danielcor<br>
-  Portions Copyright (c) 2003 osCommerce, 2003-2022 Zen Cart</p>
+  Portions Copyright (c) 2003 osCommerce, 2003-2024 Zen Cart</p>
 <p>This contribution is subject to version 3.0 of the GPL license available through the world-wide-web at the following url:<br>
   <a href="http://www.zen-cart-pro.at/license/3_0.txt">http://www.zen-cart-pro.at/license/3_0.txt</a></p>
 </div>
@@ -102,7 +104,7 @@ Anpassungen aus 1.5.6d integriert
 <h2>Installation</h2>
 <h3><br>
   Voraussetzungen</h3>
-  <p>    Dieses Modul ist<strong> nur für die deutsche Zen Cart 1.5.7 Version geeignet</strong><br>
+  <p>    Dieses Modul ist<strong> nur für die deutsche Zen Cart 1.5.7h Version geeignet</strong><br>
     <br>
     <strong>WICHTIG:</strong><br>
   Für den Einbau dieses Moduls sollten Sie über folgende Werkzeuge verfügen:<br>
@@ -141,7 +143,7 @@ Dann die Ordner/Dateien in der vorgegebenen Struktur in Ihr Zen Cart   Verzeichn
   <strong>Daher:</strong><br>
   Falls bereits einmal Änderungen an diesen Dateien in der Zen Cart   Installation gemacht wurden, mit WinMerge oder BeyondCompare die Dateien   vergleichen und nur die Änderungen in die bestehenden Dateien   übernehmen. Keinesfalls einfach so hochladen!!!<br>
   <br>
-  Wurden noch keine Änderungen gemacht (Zen Cart 1.5.7 wurde z.B. gerade erst   frisch installiert), die Ordner/Dateien aus dem Ordner GEAENDERTE   DATEIEN einfach in der vorgegebenen Struktur in Ihr Zen Cart Verzeichnis   hochladen.</p>
+  Wurden noch keine Änderungen gemacht (Zen Cart 1.5.7h wurde z.B. gerade erst   frisch installiert), die Ordner/Dateien aus dem Ordner GEAENDERTE   DATEIEN einfach in der vorgegebenen Struktur in Ihr Zen Cart Verzeichnis   hochladen.</p>
 <p>3. <br>
   Im Ordner SQL dieses Downloads die install.sql mit einem Texteditor   öffnen. Inhalt kopieren und einfügen ins Feld unter Tools &gt; SQL   Patches installieren und Absenden. Dadurch werden die nötigen   Datenbankeinträge vorgenommen.</p>
 <p>4.<br>
@@ -158,11 +160,10 @@ Dann die Ordner/Dateien in der vorgegebenen Struktur in Ihr Zen Cart   Verzeichn
 <p>6.<br>
   In der Zen Cart Administration finden Sie nun den neuen Menüpunkt Webshop &gt; Lagerbestand für Artikel mit Attributen.<br>
   Legen Sie hier Ihre gewünschten Lagerbestände für Ihre verschiedenen Artikelvarianten an. <br>
-  Um die Lagerbestände mehrerer Varianten auf einen Schlag zu ändern ins jeweilige Mengeneingabefeld clicken, es wird editierbar. Alle Mengen eintragen und dann auf Speichern. So können Sie in einem Schritt alle Mengen auf einmal ändern.<br>
+  Um die Lagerbestände mehrerer Varianten auf einen Schlag zu ändern, klappen Sie mit dem + Symbol die Lagerbestände bei der gewünschten Artikel ID auf und clicken ins jeweilige Mengeneingabefeld, es wird editierbar. Alle Mengen eintragen und dann auf Speichern. So können Sie in einem Schritt alle Mengen auf einmal ändern.<br>
   <strong>Wichtig:</strong><br>
   Diese Funktionalität hat dann nur die Mengen der einzelnen Varianten geändert. Aber nicht die Gesamtmenge des übergeordneten Artikels.<br>
-  Sie sehen einen entsprechenden Hinweis und gehen in einem zweiten Schritt auf &quot;Mengen abgeichen&quot; wo Sie diesen Hinweis sehen. Oder Sie verwenden oben rechts &quot;Alle Mengen synchronisieren&quot;
-  <br>
+  Sie sehen einen entsprechenden Hinweis und gehen in einem zweiten Schritt auf &quot;Mengen abgeichen&quot; wo Sie diesen Hinweis sehen. Oder Sie verwenden oben rechts &quot;Alle Mengen synchronisieren&quot;<br>
 </p>
 <p><b>Hinweis für Stock by Attributes in den Admin Profilen:</b><br>
  Wenn Sie die Lagerverwaltung für Artikel mit Attribute für einen eingeschränkten Admin erlauben wollen, dann achten Sie darauf, dass Sie im entsprechenden Adminprofil beide Checkboxen ankreuzen:<br/>
@@ -171,8 +172,12 @@ Dann die Ordner/Dateien in der vorgegebenen Struktur in Ihr Zen Cart   Verzeichn
  Es sind beide erforderlich, damit ein eingeschränkter Admin die Funktionalität nutzen kann.
   <br>
 </p>
-<p><b>Hinweis für Update von älteren Versionen:</b><br/>
-Falls Sie in Ihrem Zen Cart Shop 1.5.6f und älter Stock by Attributes bereits einsetzen und nun auf Zen Cart 1.5.7 und Stock by Attributes 2.1.0 aktualisiert haben, dann führen Sie unter Tools > SQL Patches installieren folgenden Befehl aus (alternativ auch direkt via phpMyAdmin:<br>
+<h2>Wichtiger Hinweis für Update von Älteren Versionen:</h2>
+<p>Falls Sie in Ihrem Zen Cart Shop 1.5.6f und älter Stock by Attributes bereits einsetzen und nun auf Zen Cart 1.5.7h und Stock by Attributes 2.2.0 aktualisiert haben, dann haben Sie ja bereits eine mit den Lagerbeständen befüllte Tabelle products_with_options_stock in Ihrer Datenbank.<br>
+Ihre Lagerbestände bleiben natürlich erhalten.<br>
+ABER:
+<br>
+Führen Sie unter Tools > SQL Patches installieren unbedingt folgenden Befehl aus (alternativ auch direkt via phpMyAdmin:<br>
 <br/>
 ALTER TABLE `products_with_attributes_stock` CHANGE `sort` `sort` INT NOT NULL DEFAULT '0'; 
 <br>
@@ -203,7 +208,7 @@ Also nur ausführen, wenn Sie das Modul wirklich komplett entfernen wollen und n
 Alle von diesem Modul neu angelegten Dateien vom Server löschen<br>
 <br>
 3.<br>
-Alle von diesem Modul geänderten Dateien mit den Zen Cart 1.5.7 Originaldateien bzw.   mit den Dateien Ihres Backups ersetzen. Sie hatten ja vor der   Installation ein Backup angelegt oder?
+Alle von diesem Modul geänderten Dateien mit den Zen Cart 1.5.7h Originaldateien bzw.   mit den Dateien Ihres Backups ersetzen. Sie hatten ja vor der   Installation ein Backup angelegt oder?
 
 </p>
 

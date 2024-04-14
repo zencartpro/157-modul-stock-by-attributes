@@ -1,26 +1,17 @@
 <?php
 /**
  * @package Stock by Attributes for Zen Cart German
- * @copyright Copyright 2003-2022 Zen Cart Development Team
+ * @copyright Copyright 2003-2024 Zen Cart Development Team
  * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: class.products_with_attributes_stock.php 2022-10-22 16:10:14Z webchills $
+ * @version $Id: class.products_with_attributes_stock.php 2024-04-13 12:10:14Z webchills $
  */
 
 class products_with_attributes_stock_admin extends base {
 
   //
   private $_productI;  
-/*  private $_productI;
-  
-  private $_i;
-
-  private $_stock_info = array();
-  
-  private $_attribute_stock_left;
-
-  private $_stock_values;*/
   
   /*
    * This is the observer for the admin side of SBA currently covering admin/includes/functions/general.php file to support Stock By Attributes when the order is being processed at the end of the purchase.
@@ -81,10 +72,13 @@ class products_with_attributes_stock_admin extends base {
     
     $stock_ids = zen_get_sba_ids_from_attribute($attribute_id);
 
-    if (!empty($stock_ids) && is_array($stock_ids)) {
-      $db->Execute("delete from " . TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK . " 
-           where stock_id in (" . implode(',', $stock_ids) . ")");
+    if (!(!empty($stock_ids) && is_array($stock_ids))) {
+      return;
     }
+
+    $stock_ids = array_map(function($i){ return (int)$i; }, $stock_ids);
+    $db->Execute("delete from " . TABLE_PRODUCTS_WITH_ATTRIBUTES_STOCK . " 
+         where stock_id in (" . implode(',', $stock_ids) . ")");
 
   }
   
@@ -141,6 +135,7 @@ class products_with_attributes_stock_admin extends base {
     unset($option_id);
     unset($options_values_id);
 
+    $remove_attributes_list = array();
     while (!$remove_attributes_query->EOF) {
       $remove_attributes_list[] = $remove_attributes_query->fields['products_attributes_id'];
       $remove_attributes_query->MoveNext();
