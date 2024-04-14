@@ -5,13 +5,14 @@
  * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: products_with_attributes_stock.php 2024-04-14 07:10:14Z webchills $
+ * @version $Id: products_with_attributes_stock.php 2024-04-14 15:10:14Z webchills $
  */
 
 $SBAversion = 'Version 2.2.0';
 define('STOCK_SET_SBA_SEARCHBOX','true');
 define('STOCK_SET_SBA_NUMRECORDS','100');
 define('STOCK_SBA_SEARCHLIST','false');
+
 //add required referenced files
 require('includes/application_top.php');
 require(DIR_WS_CLASSES . 'currencies.php');

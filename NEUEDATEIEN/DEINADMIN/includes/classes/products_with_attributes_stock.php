@@ -11,7 +11,6 @@
 if (!defined('IS_ADMIN_FLAG')) {
     die('Illegal Access');
 }
-define('STOCK_SHOW_IMAGE','true');
 
 class products_with_attributes_stock extends queryFactory
   {  
