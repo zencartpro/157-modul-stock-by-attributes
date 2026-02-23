@@ -7,7 +7,7 @@
  * Zen Cart German Version - www.zen-cart-pro.at
  
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: functions_products.php for SBA 2024-04-14 12:29:14Z webchills $
+ * @version $Id: functions_products.php for SBA 2026-02-23 17:40:14Z webchills $
  */
 
 /**
@@ -182,10 +182,10 @@ function zen_get_new_date_range($time_limit = false)
 
     $zc_new_date = date('Ymd', $date_range);
     switch (true) {
-        case (SHOW_NEW_PRODUCTS_LIMIT === '0'):
+        case (SHOW_NEW_PRODUCTS_LIMIT === 0):
             $new_range = '';
             break;
-        case (SHOW_NEW_PRODUCTS_LIMIT === '1'):
+        case (SHOW_NEW_PRODUCTS_LIMIT === 1):
             $zc_new_date = date('Ym', time()) . '01';
             $new_range = ' AND p.products_date_added >= ' . $zc_new_date;
             break;
@@ -1033,12 +1033,14 @@ function zen_copy_discounts_to_product($copy_from, $copy_to)
     foreach ($results as $result) {
         $db->Execute(
             "INSERT INTO " . TABLE_PRODUCTS_DISCOUNT_QUANTITY . "
-                (discount_id, products_id, discount_qty, discount_price, discount_price_w)
+                (discount_id, products_id, discount_qty, discount_price)
              VALUES
-                ($cnt_discount, $copy_to, " . $result['discount_qty'] . ", " . $result['discount_price'] . ", '" . $result['discount_price_w'] . "')"
+                ($cnt_discount, $copy_to, " . $result['discount_qty'] . ", " . $result['discount_price'] . ")"
         );
         $cnt_discount++;
     }
+
+    return true;
 }
 
 function zen_products_sort_order($includeOrderBy = true): string
