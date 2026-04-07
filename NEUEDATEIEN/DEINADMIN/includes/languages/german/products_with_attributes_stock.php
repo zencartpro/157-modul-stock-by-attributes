@@ -1,11 +1,11 @@
 <?php
 /**
  * @package Stock by Attributes for Zen Cart German
- * @copyright Copyright 2003-2024 Zen Cart Development Team
+ * @copyright Copyright 2003-2026 Zen Cart Development Team
  * Zen Cart German Version - www.zen-cart-pro.at
  * @copyright Portions Copyright 2003 osCommerce
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: products_with_attributes_stock.php 2024-04-13 12:37:14Z webchills $
+ * @version $Id: products_with_attributes_stock.php 2026-04-07 12:37:14Z webchills $
  */
  
 define('PWA_DELETE_VARIANT_CONFIRMATION', 'Wollen Sie diese Artikelvariante wirklich löschen?');
@@ -45,7 +45,7 @@ define('PWA_UPDATE_SUCCESS', 'Artikel erfolgreich aktualisiert');
 define('PWA_UPDATE_FAILURE', 'Artikel %1$d Aktualisierung fehlgeschlagen: %2$s');
 define('PWA_PARENT_QUANTITY_UPDATE_SUCCESS', 'Parent Product Quantity Updated');
 define('PWA_PARENT_QUANTITIES_UPDATE_SUCCESS', 'Parent Product Quantities Updated');
-define('PWA_WELCOME','Lagerbestandsverwaltung für Artikel mit Attributen (Stock by Attributes) 2.2.0');
+define('PWA_WELCOME','Lagerbestandsverwaltung für Artikel mit Attributen (Stock by Attributes) 2.2.1');
 define('PWA_CHOOSE_CAT','Kategorie auswählen: ');
 define('PWA_SORT_UPDATE_SUCCESS', '%1$d stock attributes updated for sort by primary attribute sort order');
 define('PWA_ADJUST_QUANTITY_SUCCESS', 'Product %1$d with stock_id %2$d found on search \'%3$s\' has been updated by %4$f to a value of %5$f.');

@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>Lagerbestand für Artikel mit Attributen - Stock by Attributes 2.1.0 für Zen-Cart 1.5.7 deutsch</title>
+<title>Lagerbestand für Artikel mit Attributen - Stock by Attributes 2.2.1 für Zen-Cart 1.5.7 deutsch</title>
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta http-equiv="content-language" content="de">
@@ -12,7 +12,7 @@
 <body>
 <div id="wrapper">
 <div id="header">
-<h1>Lagerbestand für Artikel mit Attributen - Stock by Attributes 2.2.0 <br>
+<h1>Lagerbestand für Artikel mit Attributen - Stock by Attributes 2.2.1 <br>
   für Zen Cart 1.5.7 deutsch</h1>
 </div>
 
@@ -49,7 +49,11 @@ Neu seit Version 2.0.0:<br>
 - komplett überarbeitete Administration, direktes Ändern mehrerer Lagerbestände via Ajax<br>
 - Anzeige des verfügbaren Lagerbestandes für die Variante gleich bei der Attributauswahl auf der Artikeldetailseite (admingesteuert)<br>
 - Ausblenden von nicht lagernden Varianten bei der Attributauswahl auf der Artikeldetailseite (admingesteuert)</p>
-  <p>Changelog Version 2.2.0<br>
+  <p>Changelog Version 2.2.1<br>
+2026-04-07<br>
+Anpassungen für 1.5.7k und PHP 8.4<br>
+<br>
+    Changelog Version 2.2.0<br>
 2024-04-13<br>
 Anpassungen für 1.5.7h und PHP 8.2<br>
 Platzsparendere Anzeige in der SBA Administration durch Aufklappmöglichkeit der Artikel
@@ -85,14 +89,14 @@ Anleitung aktualisiert
   </p>
 <h3>Copyright,  Lizenz</h3>
 <p>Copyright dieser deutschen Anpassung/Anleitung für Zen Cart 1.5.7 deutsch<br>
-(c) 2016-2024 webchills (<a href="http://www.webchills.at" target="_blank">www.webchills.at</a>)</p>
+(c) 2016-2026 webchills (<a href="http://www.webchills.at" target="_blank">www.webchills.at</a>)</p>
 <p>deutsche Übersetzung/Anpassung des Moduls Stock by Attributes 1.5.3<br>
   <a href="http://www.zen-cart.com/downloads.php?do=file&id=202" target="_blank">http://www.zen-cart.com/downloads.php?do=file&amp;id=202</a></p>
 <p>Copyright (c) 2009-2010 Numinix Technology (<a href="http://www.numinix.com" target="_blank">www.numinix.com</a>)<br>
   Portions Copyright (c) 2008 edv-lösungen langheiter (<a href="http://edv.langheiter.com" target="_blank">edv.langheiter.com</a>)<br>
   Portions Copyright (c) 2006-2007 kuroi Ltd (<a href="http://www.kuroiwebdesign.com" target="_blank">www.kuroiwebdesign.com</a>)<br>
   Portions Copyright (c) 2005 dafonz, 2006 danielcor<br>
-  Portions Copyright (c) 2003 osCommerce, 2003-2024 Zen Cart</p>
+  Portions Copyright (c) 2003 osCommerce, 2003-2026 Zen Cart</p>
 <p>This contribution is subject to version 3.0 of the GPL license available through the world-wide-web at the following url:<br>
   <a href="http://www.zen-cart-pro.at/license/3_0.txt">http://www.zen-cart-pro.at/license/3_0.txt</a></p>
 </div>
@@ -108,7 +112,7 @@ Anleitung aktualisiert
 <h2>Installation</h2>
 <h3><br>
   Voraussetzungen</h3>
-  <p>    Dieses Modul ist<strong> nur für die deutsche Zen Cart 1.5.7h Version geeignet</strong><br>
+  <p>    Dieses Modul ist<strong> nur für die deutsche Zen Cart 1.5.7k Version geeignet</strong><br>
     <br>
     <strong>WICHTIG:</strong><br>
   Für den Einbau dieses Moduls sollten Sie über folgende Werkzeuge verfügen:<br>
@@ -148,7 +152,7 @@ Dann die Ordner/Dateien in der vorgegebenen Struktur in Ihr Zen Cart   Verzeichn
   <strong>Daher:</strong><br>
   Falls bereits einmal Änderungen an diesen Dateien in der Zen Cart   Installation gemacht wurden, mit WinMerge oder BeyondCompare die Dateien   vergleichen und nur die Änderungen in die bestehenden Dateien   übernehmen. Keinesfalls einfach so hochladen!!!<br>
   <br>
-  Wurden noch keine Änderungen gemacht (Zen Cart 1.5.7h wurde z.B. gerade erst   frisch installiert), die Ordner/Dateien aus dem Ordner GEAENDERTE   DATEIEN einfach in der vorgegebenen Struktur in Ihr Zen Cart Verzeichnis   hochladen.</p>
+  Wurden noch keine Änderungen gemacht (Zen Cart 1.5.7k wurde z.B. gerade erst   frisch installiert), die Ordner/Dateien aus dem Ordner GEAENDERTE   DATEIEN einfach in der vorgegebenen Struktur in Ihr Zen Cart Verzeichnis   hochladen.</p>
 <p>3. <br>
   Im Ordner SQL dieses Downloads die install.sql mit einem Texteditor   öffnen. Inhalt kopieren und einfügen ins Feld unter Tools &gt; SQL   Patches installieren und Absenden. Dadurch werden die nötigen   Datenbankeinträge vorgenommen.</p>
 <p>4.<br>
@@ -183,7 +187,7 @@ Dann die Ordner/Dateien in der vorgegebenen Struktur in Ihr Zen Cart   Verzeichn
   <br>
 </p>
 <h2>Wichtiger Hinweis für Update von Älteren Versionen:</h2>
-<p>Falls Sie in Ihrem Zen Cart Shop 1.5.6f und älter Stock by Attributes bereits einsetzen und nun auf Zen Cart 1.5.7h und Stock by Attributes 2.2.0 aktualisiert haben, dann haben Sie ja bereits eine mit den Lagerbeständen befüllte Tabelle products_with_options_stock in Ihrer Datenbank.<br>
+<p>Falls Sie in Ihrem Zen Cart Shop 1.5.6f und älter Stock by Attributes bereits einsetzen und nun auf Zen Cart 1.5.7k und Stock by Attributes 2.2.1 aktualisiert haben, dann haben Sie ja bereits eine mit den Lagerbeständen befüllte Tabelle products_with_options_stock in Ihrer Datenbank.<br>
 Ihre Lagerbestände bleiben natürlich erhalten.<br>
 ABER:
 <br>
@@ -218,7 +222,7 @@ Also nur ausführen, wenn Sie das Modul wirklich komplett entfernen wollen und n
 Alle von diesem Modul neu angelegten Dateien vom Server löschen<br>
 <br>
 3.<br>
-Alle von diesem Modul geänderten Dateien mit den Zen Cart 1.5.7h Originaldateien bzw.   mit den Dateien Ihres Backups ersetzen. Sie hatten ja vor der   Installation ein Backup angelegt oder?
+Alle von diesem Modul geänderten Dateien mit den Zen Cart 1.5.7k Originaldateien bzw.   mit den Dateien Ihres Backups ersetzen. Sie hatten ja vor der   Installation ein Backup angelegt oder?
 
 </p>
 

@@ -1,10 +1,10 @@
 <?php
 /**
- * Zen Cart German Specific (zencartpro adaptations / 158 code in 157)
+ * Zen Cart German Specific (zencartpro adaptations / 200 code in 157)
  * @copyright Copyright 2003-2024 Zen Cart Development Team
  * Zen Cart German Version - www.zen-cart-pro.at
  * @license https://www.zen-cart-pro.at/license/3_0.txt GNU General Public License V3.0
- * @version $Id: order.php for SBA 2024-04-13 13:07:25Z webchills $
+ * @version $Id: order.php for SBA 2026-04-07 14:07:25Z webchills $
  */
 /**
  * order class
@@ -16,6 +16,7 @@
 if (!defined('IS_ADMIN_FLAG')) {
   die('Illegal Access');
 }
+
 class order extends base
 {
 
@@ -232,7 +233,7 @@ class order extends base
                         'shipping_tax_rate' => $order->fields['shipping_tax_rate'],
                         'last_modified' => $order->fields['last_modified'],
                         'language_code' => $order->fields['language_code'],
-			'order_weight' => $order->fields['order_weight'],
+			 'order_weight' => $order->fields['order_weight'],
                         'order_device' => $order->fields['order_device'],
         ];
 
@@ -265,7 +266,7 @@ class order extends base
         ];
         $this->delivery['zone_id'] = $this->getCountryZoneId((int)$this->delivery['country']['id'], $this->delivery['state']);
 
-    if (($order->fields['shipping_module_code'] == 'storepickup') || 
+    if (($order->fields['shipping_module_code'] == 'storepickup') ||
         (empty($this->delivery['name']) && empty($this->delivery['street_address']))) {
       $this->delivery = false;
     }
@@ -350,13 +351,13 @@ class order extends base
         $this->products[$index]['attributes'] = []; 
         while (!$attributes->EOF) {
                 $this->products[$index]['attributes'][$subindex] = [
-              'option' => $attributes->fields['products_options'],
-                                                                   'value' => $attributes->fields['products_options_values'],
-                                                                   'option_id' => $attributes->fields['products_options_id'],
-                                                                   'value_id' => $attributes->fields['products_options_values_id'],
-                                                                   'prefix' => $attributes->fields['price_prefix'],
-                                                                   'price' => $attributes->fields['options_values_price'],
-                                                                   'product_attribute_is_free' => (int)$attributes->fields['product_attribute_is_free'],
+               'option' => $attributes->fields['products_options'],
+               'value' => $attributes->fields['products_options_values'],
+               'option_id' => $attributes->fields['products_options_id'],
+               'value_id' => $attributes->fields['products_options_values_id'],
+               'prefix' => $attributes->fields['price_prefix'],
+               'price' => $attributes->fields['options_values_price'],
+               'product_attribute_is_free' => (int)$attributes->fields['product_attribute_is_free'],
                     ];
 
           $subindex++;
@@ -557,7 +558,7 @@ class order extends base
                         'currency_value' => $currencies->currencies[$_SESSION['currency']]['value'],
                         'payment_method' => (isset($GLOBALS[$paymentModule]) && is_object($GLOBALS[$paymentModule])) ? $GLOBALS[$paymentModule]->title : '',
                         'payment_module_code' => (isset($GLOBALS[$paymentModule]) && is_object($GLOBALS[$paymentModule])) ? $GLOBALS[$paymentModule]->code : '',
-                        'coupon_code' => isset($coupon_code) && is_object($coupon_code) ? $coupon_code->fields['coupon_code'] : '',    
+                        'coupon_code' => $coupon_code->fields['coupon_code'] ?? '',
                         'shipping_method' => (isset($_SESSION['shipping']['title'])) ? $_SESSION['shipping']['title'] : '',
                         'shipping_module_code' => $shipping_module_code,
                         'shipping_cost' => !empty($_SESSION['shipping']['cost']) ? $_SESSION['shipping']['cost'] : 0,
@@ -693,17 +694,17 @@ class order extends base
         foreach ($products[$i]['attributes'] as $option => $value) {
 
                     $sql = "SELECT popt.products_options_name, poval.products_options_values_name,
-                                          pa.options_values_price, pa.price_prefix
-                                   from " . TABLE_PRODUCTS_OPTIONS . " popt,
-                                        " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval,
-                                        " . TABLE_PRODUCTS_ATTRIBUTES . " pa
-                                   where pa.products_id = '" . (int)$products[$i]['id'] . "'
-                                   and pa.options_id = '" . (int)$option . "'
-                                   and pa.options_id = popt.products_options_id
-                                   and pa.options_values_id = '" . (int)$value . "'
-                                   and pa.options_values_id = poval.products_options_values_id
-                                   and popt.language_id = '" . (int)$_SESSION['languages_id'] . "'
-                                   and poval.language_id = '" . (int)$_SESSION['languages_id'] . "'";
+                                   pa.options_values_price, pa.price_prefix
+                            FROM " . TABLE_PRODUCTS_OPTIONS . " popt,
+                                 " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval,
+                                 " . TABLE_PRODUCTS_ATTRIBUTES . " pa
+                            WHERE pa.products_id = '" . (int)$products[$i]['id'] . "'
+                            AND pa.options_id = '" . (int)$option . "'
+                            AND pa.options_id = popt.products_options_id
+                            AND pa.options_values_id = '" . (int)$value . "'
+                            AND pa.options_values_id = poval.products_options_values_id
+                            AND popt.language_id = '" . (int)$_SESSION['languages_id'] . "'
+                            AND poval.language_id = '" . (int)$_SESSION['languages_id'] . "'";
 
                     $attributes = $db->Execute($sql);
 
@@ -1080,20 +1081,19 @@ class order extends base
           $stock_values = $db->ExecuteNoCache("SELECT * FROM " . TABLE_PRODUCTS . " WHERE products_id = " . zen_get_prid($this->products[$i]['id']) . " LIMIT 1");
         }
 
-        $this->notify('NOTIFY_ORDER_PROCESSING_STOCK_DECREMENT_BEGIN', $i, $stock_values);
+                $this->notify('NOTIFY_ORDER_PROCESSING_STOCK_DECREMENT_BEGIN', $i, $stock_values);
 
-        if ($stock_values->RecordCount() > 0) {
-          // do not decrement quantities if products_attributes_filename exists
-          if ((DOWNLOAD_ENABLED != 'true') || $stock_values->fields['product_is_always_free_shipping'] == 2 || (!$stock_values->fields['products_attributes_filename']) ) {
-            $stock_left = $stock_values->fields['products_quantity'] - $this->products[$i]['qty'];
-            
-          } else {
-            $stock_left = $stock_values->fields['products_quantity'];
-          }
+                if ($stock_values->RecordCount() > 0) {
+                    // do not decrement quantities if products_attributes_filename exists
+                    if ((DOWNLOAD_ENABLED != 'true') || $stock_values->fields['product_is_always_free_shipping'] == 2 || (!$stock_values->fields['products_attributes_filename'])) {
+                        $stock_left = $stock_values->fields['products_quantity'] - $this->products[$i]['qty'];
+                    } else {
+                        $stock_left = $stock_values->fields['products_quantity'];
+                    }
 
-          $products_status_update = ($stock_left <= 0 && SHOW_PRODUCTS_SOLD_OUT == '0') ? ', products_status = 0' : '';
+                    $products_status_update = ($stock_left <= 0 && SHOW_PRODUCTS_SOLD_OUT == '0') ? ', products_status = 0' : '';
 
-          $db->Execute("update " . TABLE_PRODUCTS . " set products_quantity = '" . $stock_left . "' where products_id = '" . zen_get_prid($this->products[$i]['id']) . "'");
+          $db->Execute("UPDATE " . TABLE_PRODUCTS . " set products_quantity = '" . $stock_left . "' where products_id = '" . zen_get_prid($this->products[$i]['id']) . "'");
 			// Begin SBA
 			// added to update quantities of products with attributes
 			$attribute_search = array();
